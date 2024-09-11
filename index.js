@@ -29,6 +29,7 @@ function startMain() {
                 });
             }
             startHTTPServer();
+            require("./discord/index.js")
         })
         .catch((err) => {
             console.error("MongoDB connection error:", err);
