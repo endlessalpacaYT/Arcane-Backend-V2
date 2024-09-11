@@ -9,3 +9,6 @@ A Universal Backend For Old Builds Of Fortnite!
 - [ ] Challenges
 - [ ] BattlePass
 - [ ] NewsV2
+- [ ] Discord Bot Integration
+- [ ] Frontend
+- [ ] Universal
