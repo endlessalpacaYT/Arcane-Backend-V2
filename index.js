@@ -6,6 +6,8 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3551
 
+const functions = require("./structs/functions.js");
+
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -30,6 +32,8 @@ function startMain() {
         })
         .catch((err) => {
             console.error("MongoDB connection error:", err);
+            console.log("Closing In 5 Seconds...");
+            functions.timeout(5000);
             process.exit(1); 
         });
     }
