@@ -10,8 +10,10 @@ const functions = require("./utils/functions.js");
 
 const authRoutes = require('./routes/auth');
 const cloudstorage = require('./routes/cloudstorage.js')
+const mcp = require("./routes/mcp.js");
 app.use(authRoutes);
 app.use(cloudstorage);
+app.use(mcp);
 
 app.use((req, res, next) => {
     const originalSend = res.send;
