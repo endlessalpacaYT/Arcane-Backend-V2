@@ -6,6 +6,10 @@ const { v4: uuidv4 } = require('uuid');
 const User = require('../Models/user.js'); 
 const ExchangeCode = require('../Models/Exchange-Code.js');
 
+const createAccessToken = require('./tokenmanager/createAccessToken');
+const createRefreshToken = require('./tokenmanager/createRefreshToken');
+const generateExpiresAt = require('./tokenmanager/generateExpiresAt');
+
 const app = express();
 const global = { clientTokens: [] }; 
 
@@ -70,40 +74,27 @@ app.post('/account/api/oauth/token', async (req, res) => {
             });
         }
 
-        if (grant_type == 'password') {
+        if (grant_type === 'password') {
             const user = await User.findOne({ email: username });
             if (!user) {
-                return res.status(401).json({
-                     error: 'arcane.errors.login.invalid.email' 
-                });
+                return res.status(401).json({ error: 'arcane.errors.login.invalid.email' });
             }
-
+    
             const validPassword = await bcrypt.compare(password, user.password);
             if (!validPassword) {
-                return res.status(401).json({
-                     error: 'arcane.errors.login.invalid.password' 
-                });
+                return res.status(401).json({ error: 'arcane.errors.login.invalid.password' });
             }
-
-            const token = jwt.sign(
-                {
-                    user_id: user._id,
-                    username: user.username,
-                    email: user.email,
-                },
-                process.env.JWT_SECRET,
-                { expiresIn: '8h' }
-            );
-
-            const expiresIn = 28800; 
-            const expiresAt = new Date(Date.now() + expiresIn * 1000).toISOString();
-
+    
+            const token = createAccessToken({ user_id: user._id, username: user.username, email: user.email });
+            const expiresIn = 28800;
+            const expiresAt = generateExpiresAt(expiresIn);
+    
             return res.json({
                 access_token: `eg1~${token}`,
-                expires_in: expiresIn, 
-                expires_at: expiresAt, 
+                expires_in: expiresIn,
+                expires_at: expiresAt,
                 token_type: 'bearer',
-                client_id: user.accountId, 
+                client_id: user.accountId,
                 product_id: 'prod-fn',
                 application_id: 'fghi4567FNFBKFz3E4TROb0bmPS8h1GW'
             });
