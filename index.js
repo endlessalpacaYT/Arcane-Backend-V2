@@ -11,6 +11,16 @@ const functions = require("./structs/functions.js");
 const authRoutes = require('./routes/auth');
 app.use(authRoutes);
 
+app.use((req, res, next) => {
+    const originalSend = res.send;
+    res.on('finish', () => {
+        if (res.statusCode >= 400) {
+            console.error(`Issue with request: ${req.method} ${req.url} - Status: ${res.statusCode}`);
+        }
+    });
+    next();
+});
+
 app.use(require("./structs/error.js"));
 
 function startMain() {
