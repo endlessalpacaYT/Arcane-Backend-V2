@@ -216,4 +216,26 @@ app.get("/account/api/oauth/verify", (req, res) => {
     });
 });
 
+app.delete("/account/api/oauth/sessions/kill", (req, res) => {
+    res.status(204).end();
+});
+
+app.post("/auth/v1/oauth/token", async (req, res) => {
+    res.json({
+        access_token: "arcanetoken",
+        token_type: "bearer",
+        expires_at: "9999-12-31T23:59:59.999Z",
+        features: [
+            "AntiCheat",
+            "Connect",
+            "Ecom"
+        ],
+        organization_id: "lawinsorganizationidlol",
+        product_id: "prod-fn",
+        sandbox_id: "fn",
+        deployment_id: "arcanedeploymentid",
+        expires_in: 3599
+    });
+})
+
 module.exports = app;
