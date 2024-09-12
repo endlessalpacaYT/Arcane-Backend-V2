@@ -48,13 +48,3 @@ function startBackend() {
 };
 
 startBackend();
-
-
-///{
-  //"//errorCode": "errors.com.epicgames.unauthorized",//
-  //"errorMessage": "The request is missing authentication, or the authentication is no longer valid.",
-  //"numericErrorCode": 1002,
-  //"messageVars": ["could not parse access token"],
-  //"originatingService": "com.epicgames.security.moderation.skelly",
-  //"intent": "prod"
-}//
