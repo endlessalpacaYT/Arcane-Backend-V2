@@ -9,6 +9,8 @@ const ExchangeCode = require('../Models/Exchange-Code.js');
 const createAccessToken = require('../tokenmanager/createAccessToken');
 const createRefreshToken = require('../tokenmanager/createRefreshToken');
 const validateToken = require('../tokenmanager/validateToken.js');
+const verifyClientCredentials = require("../tokenManager/verifyClientCredentials.js");
+const createClientAccessToken = require('../tokenmanager/createClientAccessToken');
 const generateExpiresAt = require('../tokenmanager/generateExpiresAt');
 
 const app = express();
@@ -35,43 +37,37 @@ app.post('/account/api/oauth/token', async (req, res) => {
             'X-Epic-Device-ID': deviceId,
         };
 
-        if (grant_type === "client_credentials") {
+        if (grant_type === 'client_credentials') {
             const authHeader = req.headers.authorization;
-
+    
             if (!authHeader || !authHeader.startsWith('Basic ')) {
                 return res.status(401).json({ error: 'Missing or invalid authorization header' });
             }
-            
+    
             const base64Credentials = authHeader.split(' ')[1];
             const credentials = Buffer.from(base64Credentials, 'base64').toString().split(':');
             const clientId = credentials[0];
             const clientSecret = credentials[1];
-
-            const token = jwt.sign(
-                {
-                    client_id: clientId,
-                    client_service: 'prod-fn',
-                    aud: 'fortnite-service',
-                    iss: 'arcane-backend',
-                },
-                process.env.JWT_SECRET,
-                { expiresIn: '8h' }
-            );
-
+    
+            const isValidClient = verifyClientCredentials(clientId, clientSecret);
+            if (!isValidClient) {
+                return res.status(401).json({ error: 'Invalid client credentials' });
+            }
+    
+            const token = createClientAccessToken(clientId);
             const expiresIn = 28800; 
-            const currentTime = new Date(); 
-            const expiresAt = new Date(currentTime.getTime() + expiresIn * 1000).toISOString();
-
+            const expiresAt = generateExpiresAt(expiresIn);
+    
             return res.json({
-                "access_token": "41ff4aeaede44f62b81a57688b0b6ef3",
-                "expires_in": expiresIn,
-                "expires_at": expiresAt,
-                "token_type": "bearer",
-                "client_id": clientId,
-                "internal_client": true,
-                "client_service": "prod-fn",
-                "product_id": "prod-fn",
-                "application_id": "fghi4567FNFBKFz3E4TROb0bmPS8h1GW"
+                access_token: `eg1~${token}`,
+                expires_in: expiresIn,
+                expires_at: expiresAt,
+                token_type: 'bearer',
+                client_id: clientId,
+                internal_client: true,
+                client_service: 'prod-fn',
+                product_id: 'prod-fn',
+                application_id: 'fghi4567FNFBKFz3E4TROb0bmPS8h1GW'
             });
         }
 
