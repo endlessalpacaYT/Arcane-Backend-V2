@@ -8,6 +8,7 @@ const ExchangeCode = require('../Models/Exchange-Code.js');
 
 const createAccessToken = require('../tokenmanager/createAccessToken');
 const createRefreshToken = require('../tokenmanager/createRefreshToken');
+const validateToken = require('../tokenmanager/validateToken.js');
 const generateExpiresAt = require('../tokenmanager/generateExpiresAt');
 
 const app = express();
