@@ -8,19 +8,15 @@ const PORT = process.env.PORT || 3551
 
 const functions = require("./structs/functions.js");
 
-app.use(express.json());
+const authRoutes = require('./routes/auth');
+app.use(authRoutes);
 
-app.use((req, res, next) => {
-    res.status(404);
-    res.json({
-        error: "errors.common.arcane.notfound",
-        status: 404
-    })
-});
+app.use(require("./structs/error.js"));
 
 function startMain() {
     function initDB() {
-        mongoose.connect("mongodb://127.0.0.1:27017/Arcane")
+        const mongoDB = process.env.MONGODB;
+        mongoose.connect(mongoDB || "mongodb://127.0.0.1:27017/Arcane")
         .then(() => {
             console.log("MongoDB connected successfully!");
             function startHTTPServer() {

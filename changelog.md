@@ -1,5 +1,10 @@
 # ChangeLog
 
+### v0.12
+- Added routes.js
+- Added error.js
+- Added A Few Routes
+
 ### v0.11
 - Discord Support
 - Full Database Integration (MongoDB)

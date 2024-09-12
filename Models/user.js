@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema(
     {
-        created: { type: Date, required: true },
+        created: { type: Date, required: true, default: Date.now },
         banned: { type: Boolean, default: false },
         discordId: { type: String, required: true, unique: true },
         accountId: { type: String, required: true, unique: true },
@@ -14,8 +14,13 @@ const UserSchema = new mongoose.Schema(
     {
         collection: "users"
     }
-)
+);
 
-const model = mongoose.model('UserSchema', UserSchema);
+UserSchema.pre('save', function(next) {
+    this.username_lower = this.username.toLowerCase();
+    next();
+});
+
+const model = mongoose.model('User', UserSchema);
 
 module.exports = model;
