@@ -43,7 +43,7 @@ function startMain() {
 }
 
 function startBackend() {
-    console.log("Arcane Starting");
+    console.log("Backend Starting");
     startMain();
 };
 
