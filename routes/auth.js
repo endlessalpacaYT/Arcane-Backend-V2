@@ -6,9 +6,9 @@ const { v4: uuidv4 } = require('uuid');
 const User = require('../Models/user.js'); 
 const ExchangeCode = require('../Models/Exchange-Code.js');
 
-const createAccessToken = require('./tokenmanager/createAccessToken');
-const createRefreshToken = require('./tokenmanager/createRefreshToken');
-const generateExpiresAt = require('./tokenmanager/generateExpiresAt');
+const createAccessToken = require('../tokenmanager/createAccessToken');
+const createRefreshToken = require('../tokenmanager/createRefreshToken');
+const generateExpiresAt = require('../tokenmanager/generateExpiresAt');
 
 const app = express();
 const global = { clientTokens: [] }; 
