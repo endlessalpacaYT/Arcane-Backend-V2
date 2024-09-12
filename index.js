@@ -6,7 +6,7 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3551
 
-const functions = require("./structs/functions.js");
+const functions = require("./utils/functions.js");
 
 const authRoutes = require('./routes/auth');
 app.use(authRoutes);
@@ -21,7 +21,22 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(require("./structs/error.js"));
+app.use((req, res, next) => {
+    res.status(404);
+    res.json({
+        error: "errors.common.arcane.notfound",
+        status: 404
+    })
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+        error: "Something went wrong!",
+        Details: "500, Server Error: " + err,
+        status: 500
+    });
+});
 
 function startMain() {
     function initDB() {
