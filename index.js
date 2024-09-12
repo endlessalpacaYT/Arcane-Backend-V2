@@ -9,7 +9,9 @@ const PORT = process.env.PORT || 3551
 const functions = require("./utils/functions.js");
 
 const authRoutes = require('./routes/auth');
+const cloudstorage = require('./routes/cloudstorage.js')
 app.use(authRoutes);
+app.use(cloudstorage);
 
 app.use((req, res, next) => {
     const originalSend = res.send;

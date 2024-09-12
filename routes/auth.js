@@ -1,245 +1,331 @@
-const express = require("express");
-const app = express.Router();
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const { v4: uuidv4 } = require('uuid');
+const Express = require("express");
+const express = Express.Router();
+const fs = require("fs");
+const path = require("path");
+const iniparser = require("ini");
 
-const error = require("../utils/error.js");
-const functions = require("../utils/functions.js");
-const createAccessToken = require('../tokenmanager/createAccessToken');
-const createRefreshToken = require('../tokenmanager/createRefreshToken');
-const validateToken = require('../tokenmanager/validateToken.js');
-const generateExpiresAt = require('../tokenmanager/generateExpiresAt');
-const User = require("../Models/user.js");
-const ExchangeCode = require('../Models/Exchange-Code.js'); 
+var Memory_CurrentAccountID = "BackendS12";
 
-app.post("/account/api/oauth/token", async (req, res) => {
-    let clientId;
+express.get("/account/api/public/account", async (req, res) => {
+    var response = [];
 
-    try {
-        clientId = functions.DecodeBase64(req.headers["authorization"].split(" ")[1]).split(":");
-        if (!clientId[1]) throw new Error("invalid client id");
-        clientId = clientId[0];
-    } catch {
-        return error.createError(
-            "errors.com.epicgames.common.oauth.invalid_client",
-            "It appears that your Authorization header may be invalid or not present, please verify that you are sending the correct headers.", 
-            [], 1011, "invalid_client", 400, res
-        );
+    if (typeof req.query.accountId == "string") {
+        var accountId = req.query.accountId;
+        if (accountId.includes("@")) accountId = accountId.split("@")[0];
+
+        response.push({
+            "id": accountId,
+            "displayName": accountId,
+            "externalAuths": {}
+        })
     }
 
-    switch (req.body.grant_type) {
-        case "client_credentials":
-            handleClientCredentials(clientId, req, res);
-            return;
+    if (Array.isArray(req.query.accountId)) {
+        for (var x in req.query.accountId) {
+            var accountId = req.query.accountId[x];
+            if (accountId.includes("@")) accountId = accountId.split("@")[0];
 
-        case "password":
-            handlePasswordGrant(req, res);
-            return;
-
-        case "refresh_token":
-            handleRefreshTokenGrant(req, res);
-            return;
-
-        case "exchange_code":
-            await handleExchangeCodeGrant(req, res);
-            return;
-
-        default:
-            error.createError(
-                "errors.com.epicgames.common.oauth.unsupported_grant_type",
-                `Unsupported grant type: ${req.body.grant_type}`, 
-                [], 1016, "unsupported_grant_type", 400, res
-            );
-            return;
+            response.push({
+                "id": accountId,
+                "displayName": accountId,
+                "externalAuths": {}
+            })
+        }
     }
+
+    res.json(response)
+})
+
+express.get("/account/api/public/account/:accountId", async (req, res) => {
+    if (true) {
+        Memory_CurrentAccountID = req.params.accountId;
+    }
+
+    if (Memory_CurrentAccountID.includes("@")) Memory_CurrentAccountID = Memory_CurrentAccountID.split("@")[0];
+
+    res.json({
+        "id": req.params.accountId,
+        "displayName": Memory_CurrentAccountID,
+        "name": "Lawin",
+        "email": Memory_CurrentAccountID + "@lawin.com",
+        "failedLoginAttempts": 0,
+        "lastLogin": new Date().toISOString(),
+        "numberOfDisplayNameChanges": 0,
+        "ageGroup": "UNKNOWN",
+        "headless": false,
+        "country": "US",
+        "lastName": "Server",
+        "preferredLanguage": "en",
+        "canUpdateDisplayName": false,
+        "tfaEnabled": false,
+        "emailVerified": true,
+        "minorVerified": false,
+        "minorExpected": false,
+        "minorStatus": "NOT_MINOR",
+        "cabinedMode": false,
+        "hasHashedEmail": false
+    })
+})
+
+express.get("/sdk/v1/*", async (req, res) => {
+    const sdk = require("./../responses/sdkv1.json");
+    res.json(sdk)
+})
+
+express.post("/auth/v1/oauth/token", async (req, res) => {
+    res.json({
+        "access_token": "lawinstokenlol",
+        "token_type": "bearer",
+        "expires_in": 28800,
+        "expires_at": "9999-12-31T23:59:59.999Z",
+        "deployment_id": "lawinsdeploymentidlol",
+        "organization_id": "lawinsorganizationidlol",
+        "product_id": "prod-fn",
+        "sandbox_id": "fn"
+    })
+})
+
+express.get("/epic/id/v2/sdk/accounts", async (req, res) => {
+    res.json([{
+        "accountId": Memory_CurrentAccountID,
+        "displayName": Memory_CurrentAccountID,
+        "preferredLanguage": "en",
+        "cabinedMode": false,
+        "empty": false
+    }])
+})
+
+express.post("/epic/oauth/v2/token", async (req, res) => {
+    res.json({
+        "scope": "basic_profile friends_list openid presence",
+        "token_type": "bearer",
+        "access_token": "lawinstokenlol",
+        "expires_in": 28800,
+        "expires_at": "9999-12-31T23:59:59.999Z",
+        "refresh_token": "lawinstokenlol",
+        "refresh_expires_in": 86400,
+        "refresh_expires_at": "9999-12-31T23:59:59.999Z",
+        "account_id": Memory_CurrentAccountID,
+        "client_id": "lawinsclientidlol",
+        "application_id": "lawinsapplicationidlol",
+        "selected_account_id": Memory_CurrentAccountID,
+        "id_token": "lawinstokenlol"
+    })
+})
+
+express.get("/account/api/public/account/*/externalAuths", async (req, res) => {
+    res.json([])
+})
+
+express.delete("/account/api/oauth/sessions/kill", async (req, res) => {
+    res.status(204);
+    res.end();
+})
+
+express.delete("/account/api/oauth/sessions/kill/*", async (req, res) => {
+    res.status(204);
+    res.end();
+})
+
+express.get("/account/api/oauth/verify", async (req, res) => {
+    res.json({
+        "token": "lawinstokenlol",
+        "session_id": "3c3662bcb661d6de679c636744c66b62",
+        "token_type": "bearer",
+        "client_id": "lawinsclientidlol",
+        "internal_client": true,
+        "client_service": "fortnite",
+        "account_id": Memory_CurrentAccountID,
+        "expires_in": 28800,
+        "expires_at": "9999-12-02T01:12:01.100Z",
+        "auth_method": "exchange_code",
+        "display_name": Memory_CurrentAccountID,
+        "app": "fortnite",
+        "in_app_id": Memory_CurrentAccountID,
+        "device_id": "lawinsdeviceidlol"
+    })
+})
+
+express.post("/account/api/oauth/token", async (req, res) => {
+    if (false) {
+        Memory_CurrentAccountID = req.body.username || "LawinServer"
+    }
+
+    if (Memory_CurrentAccountID.includes("@")) Memory_CurrentAccountID = Memory_CurrentAccountID.split("@")[0];
+
+    res.json({
+        "access_token": "lawinstokenlol",
+        "expires_in": 28800,
+        "expires_at": "9999-12-02T01:12:01.100Z",
+        "token_type": "bearer",
+        "refresh_token": "lawinstokenlol",
+        "refresh_expires": 86400,
+        "refresh_expires_at": "9999-12-02T01:12:01.100Z",
+        "account_id": Memory_CurrentAccountID,
+        "client_id": "lawinsclientidlol",
+        "internal_client": true,
+        "client_service": "fortnite",
+        "displayName": Memory_CurrentAccountID,
+        "app": "fortnite",
+        "in_app_id": Memory_CurrentAccountID,
+        "device_id": "lawinsdeviceidlol"
+    })
+})
+
+express.post("/account/api/oauth/exchange", async (req, res) => {
+    res.json({})
+})
+
+express.get("/account/api/epicdomains/ssodomains", async (req, res) => {
+    res.json([
+        "unrealengine.com",
+        "unrealtournament.com",
+        "fortnite.com",
+        "epicgames.com"
+    ])
+})
+
+express.post("/fortnite/api/game/v2/tryPlayOnPlatform/account/*", async (req, res) => {
+    res.setHeader("Content-Type", "text/plain");
+    res.send(true);
+})
+
+express.get('/lightswitch/api/service/bulk/status', (req, res) => {
+    const statusResponse = [
+        {
+            serviceInstanceId: "fortnite",
+            status: "UP", 
+            message: "Fortnite is online.",
+            maintenanceUri: null,
+            allowedActions: ["PLAY", "DOWNLOAD"],
+            launcherInfoDTO: {
+                appName: "Fortnite",
+                catalogItemId: "4fe75bbc5a674f4f9b356b5c90567da5",
+                namespace: "fn"
+            }
+        }
+    ];
+
+    res.json(statusResponse);  
 });
 
-async function handleClientCredentials(clientId, req, res) {
-    const ip = req.ip;
-    let clientTokenIndex = global.clientTokens.findIndex(i => i.ip == ip);
-    if (clientTokenIndex != -1) global.clientTokens.splice(clientTokenIndex, 1);
-
-    const token = createAccessToken(clientId, req.body.grant_type, ip, 4); 
-    functions.UpdateTokens();
-
-    const decodedClient = jwt.decode(token);
-    res.json({
-        access_token: `eg1~${token}`,
-        expires_in: generateExpiresAt(decodedClient),
-        expires_at: generateExpiresAt(decodedClient, true),
-        token_type: "bearer",
-        client_id: clientId,
-        internal_client: true,
-        client_service: "fortnite"
-    });
-}
-
-async function handlePasswordGrant(req, res) {
-    if (!req.body.username || !req.body.password) {
-        return error.createError(
-            "errors.com.epicgames.common.oauth.invalid_request",
-            "Username/password is required.", 
-            [], 1013, "invalid_request", 400, res
-        );
-    }
-
-    const { username: email, password } = req.body;
-    req.user = await User.findOne({ email: email.toLowerCase() }).lean();
-    if (!req.user || !await bcrypt.compare(password, req.user.password)) {
-        return error.createError(
-            "errors.com.epicgames.account.invalid_account_credentials",
-            "Your e-mail and/or password are incorrect. Please check them and try again.", 
-            [], 18031, "invalid_grant", 400, res
-        );
-    }
-
-    issueTokens(req, res);
-}
-
-async function handleRefreshTokenGrant(req, res) {
-    if (!req.body.refresh_token) {
-        return error.createError(
-            "errors.com.epicgames.common.oauth.invalid_request",
-            "Refresh token is required.", 
-            [], 1013, "invalid_request", 400, res
-        );
-    }
-
-    const refresh_token = req.body.refresh_token;
-    let refreshTokenIndex = global.refreshTokens.findIndex(i => i.token == refresh_token);
-    let refreshObject = global.refreshTokens[refreshTokenIndex];
-
-    try {
-        if (refreshTokenIndex == -1) throw new Error("Refresh token invalid.");
-        let decodedRefreshToken = jwt.decode(refresh_token.replace("eg1~", ""));
-        if (validateToken(decodedRefreshToken)) throw new Error("Expired refresh token.");
-    } catch {
-        if (refreshTokenIndex != -1) global.refreshTokens.splice(refreshTokenIndex, 1);
-        functions.UpdateTokens();
-
-        return error.createError(
-            "errors.com.epicgames.account.auth_token.invalid_refresh_token",
-            `Sorry the refresh token '${refresh_token}' is invalid`, 
-            [refresh_token], 18036, "invalid_grant", 400, res
-        );
-    }
-
-    req.user = await User.findOne({ accountId: refreshObject.accountId }).lean();
-    issueTokens(req, res);
-}
-
-async function handleExchangeCodeGrant(req, res) {
-    if (!req.body.exchange_code) {
-        return error.createError(
-            "errors.com.epicgames.common.oauth.invalid_request",
-            "Exchange code is required.", 
-            [], 1013, "invalid_request", 400, res
-        );
-    }
-
-    const { exchange_code: code } = req.body;
-    try {
-        const exchangeCodeRecord = await ExchangeCode.findOne({ code });
-        if (!exchangeCodeRecord || exchangeCodeRecord.used || exchangeCodeRecord.expires_at < Date.now()) {
-            return res.status(400).json({
-                error: "Invalid or expired exchange code"
-            });
+express.get('/fortnite/api/game/v2/enabled_features', (req, res) => {
+    const enabledFeaturesResponse = [
+        {
+            "featureName": "BattleRoyale",
+            "enabled": true
+        },
+        {
+            "featureName": "CreativeMode",
+            "enabled": true
         }
+    ];
 
-        exchangeCodeRecord.used = true;
-        await exchangeCodeRecord.save();
+    res.json(enabledFeaturesResponse);
+});
 
-        const { user_id, username } = exchangeCodeRecord;
+express.post('/fortnite/api/game/v2/grant_access/:backend', (req, res) => {
+    const backend = req.params.backend;
 
-        const accessToken = jwt.sign(
-            {
-                user_id,
-                username,
-                clid: "ec684b8c687f479fadea3cb2ad83f5c6", 
-                am: "exchange_code", 
+    const grantAccessResponse = {
+        "accountId": "94b1569506b04f9f8557af611e8c5e47",  
+        "backendName": backend,
+        "accessGranted": true,
+        "message": `${backend} access granted.`
+    };
+
+    res.json(grantAccessResponse);
+});
+
+const mockProfileData = (profileId) => {
+    const baseProfile = {
+        "profileRevision": 1,
+        "profileId": profileId,
+        "profileChangesBaseRevision": 1,
+        "profileChanges": [],
+        "profileCommandRevision": 1,
+        "serverTime": new Date().toISOString(),
+        "responseVersion": 1
+    };
+
+    if (profileId === "common_public") {
+        return {
+            ...baseProfile,
+            "items": {
+                "item123": {
+                    "templateId": "Token:defaultToken",
+                    "attributes": {
+                        "level": 100,
+                        "xp": 0
+                    }
+                }
             },
-            process.env.JWT_SECRET,
-            { expiresIn: '2h' } 
-        );
-
-        const refreshToken = jwt.sign(
-            {
-                user_id,
-                username,
+            "stats": {
+                "attributes": {
+                    "last_save_date": new Date().toISOString(),
+                    "season_number": 12
+                }
+            }
+        };
+    } else if (profileId === "common_core") {
+        return {
+            ...baseProfile,
+            "items": {
+                "item456": {
+                    "templateId": "Hero:defaultHero",
+                    "attributes": {
+                        "hero_level": 50,
+                        "hero_xp": 2000
+                    }
+                }
             },
-            process.env.JWT_SECRET,
-            { expiresIn: '8h' } 
-        );
-
-        const accessExpiresIn = 7200; 
-        const refreshExpiresIn = 28800; 
-        const accessExpiresAt = new Date(Date.now() + accessExpiresIn * 1000).toISOString();
-        const refreshExpiresAt = new Date(Date.now() + refreshExpiresIn * 1000).toISOString();
-
-        return res.json({
-            access_token: `eg1~${accessToken}`,
-            expires_in: accessExpiresIn,
-            expires_at: accessExpiresAt,
-            token_type: "bearer",
-            refresh_token: `eg1~${refreshToken}`,
-            refresh_expires: refreshExpiresIn,
-            refresh_expires_at: refreshExpiresAt,
-            account_id: user_id,
-            client_id: uuidv4(),
-            internal_client: true,
-            client_service: "prod-fn",
-            displayName: username,
-            app: "prod-fn",
-            in_app_id: user_id,
-            product_id: "prod-fn",
-            application_id: "fghi4567FNFBKFz3E4TROb0bmPS8h1GW"
-        });
-    } catch (err) {
-        console.error('Error:', err);
-        if (!res.headersSent) {
-            return res.status(500).json({
-                error: "arcane.errors.server_error",
-                message: err.message
-            });
-        }
+            "stats": {
+                "attributes": {
+                    "last_save_date": new Date().toISOString(),
+                    "account_level": 80
+                }
+            }
+        };
+    } else {
+        return baseProfile; 
     }
-}
+};
 
-function issueTokens(req, res) {
-    if (req.user.banned) {
-        return error.createError(
-            "errors.com.epicgames.account.account_not_active",
-            "You have been permanently banned from Fortnite.", 
-            [], -1, undefined, 400, res
-        );
-    }
+express.post('/fortnite/api/game/v2/profile/:backend/client/QueryProfile', (req, res) => {
+    const { profileId } = req.query; 
+    const profileData = mockProfileData(profileId);
 
-    const deviceId = functions.MakeID().replace(/-/g, "");
-    const accessToken = createAccessToken(req.user, clientId, req.body.grant_type, deviceId, 8);
-    const refreshToken = createRefreshToken(req.user, clientId, req.body.grant_type, deviceId, 24); 
-    functions.UpdateTokens();
+    res.json(profileData);
+});
 
-    const decodedAccess = jwt.decode(accessToken);
-    const decodedRefresh = jwt.decode(refreshToken);
+express.post('/fortnite/api/game/v2/profile/:backend/client/SetMtxPlatform', (req, res) => {
+    const { profileId, rvn } = req.query;
 
-    res.json({
-        access_token: `eg1~${accessToken}`,
-        expires_in: generateExpiresAt(decodedAccess),
-        expires_at: generateExpiresAt(decodedAccess, true),
-        token_type: "bearer",
-        refresh_token: `eg1~${refreshToken}`,
-        refresh_expires: generateExpiresAt(decodedRefresh),
-        refresh_expires_at: generateExpiresAt(decodedRefresh, true),
-        account_id: req.user.accountId,
-        client_id: clientId,
-        internal_client: true,
-        client_service: "fortnite",
-        displayName: req.user.username,
-        app: "fortnite",
-        in_app_id: req.user.accountId,
-        device_id: deviceId
-    });
-}
+    const response = {
+        profileRevision: parseInt(rvn) + 1,
+        profileId: profileId,
+        profileChangesBaseRevision: parseInt(rvn),
+        profileChanges: [],
+        profileCommandRevision: parseInt(rvn) + 1,
+        serverTime: new Date().toISOString(),
+        responseVersion: 1
+    };
 
-module.exports = app;
+    res.json(response);
+});
+
+const keychain = require("./../responses/keychain.json");
+
+express.get("/fortnite/api/storefront/v2/catalog", async (req, res) => {
+    res.status(200).json({ message: "Catalog fetched successfully" });
+});
+
+express.get("/fortnite/api/storefront/v2/keychain", async (req, res) => {
+    res.json(keychain)
+})
+
+express.get("/catalog/api/shared/bulk/offers", async (req, res) => {
+    res.json({});
+})
+
+module.exports = express;
