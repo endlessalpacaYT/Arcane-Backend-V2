@@ -4,11 +4,11 @@ const UserSchema = new mongoose.Schema(
     {
         Create: { type: Date, required: true, default: Date.now },
         Banned: { type: Boolean, default: false },
-        BannedReason: { type: String, required: true, unique: true },
-        BannedExpire: { type: Date, required: true, default: Date.now },
-        BannedMatchmaker: { type: String, required: true, unique: true },
-        BannedMatchmakerExpire: { type: Date, required: true, default: Date.now },
-        MatchmakerID: { type: String, required: true, unique: true },
+        BannedReason: { type: String, unique: true },
+        BannedExpire: { type: Date, default: Date.now },
+        BannedMatchmaker: { type: String, unique: true },
+        BannedMatchmakerExpire: { type: Date, default: Date.now },
+        MatchmakerID: { type: String, unique: true },
         DiscordId: { type: String, required: true, unique: true },
         AccountId: { type: String, required: true, unique: true },
         Username: { type: String, required: true, unique: true },
@@ -22,10 +22,12 @@ const UserSchema = new mongoose.Schema(
 );
 
 UserSchema.pre('save', function(next) {
-    this.username_lower = this.username.toLowerCase();
+    this.Username_Lower = this.Username.toLowerCase();
     next();
 });
 
-const model = mongoose.model('UserV2', UserSchema);
+const UserV2 = mongoose.model('UserV2', UserSchema);
 
-module.exports = model;
+UserV2.createIndexes({ Email: 1 });
+
+module.exports = UserV2;

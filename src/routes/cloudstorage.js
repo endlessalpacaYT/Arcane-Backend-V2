@@ -155,7 +155,11 @@ express.put("/fortnite/api/cloudstorage/user/*/:file", async (req, res) => {
     if (process.env.LOCALAPPDATA) file = path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
     else file = path.join(__dirname, "..", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
 
-    fs.writeFileSync(file, req.rawBody, 'latin1');
+    try {
+        fs.writeFileSync(file, req.rawBody, 'latin1');
+    }catch (err) {
+        console.log("Error Writing CloudStorage File: " + err)
+    }
     res.status(204).end();
 })
 

@@ -265,4 +265,23 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Something went wrong' });
 });
 
+app.get('/fortnite/api/game/v2/enabled_features', (req, res) => {
+    const enabledFeaturesResponse = [
+        {
+            "featureName": "BattleRoyale",
+            "enabled": true
+        },
+        {
+            "featureName": "CreativeMode",
+            "enabled": false
+        },
+        {
+            "featureName": "SaveTheWorld",
+            "enabled": false
+        }
+    ];
+
+    res.status(200).json(enabledFeaturesResponse);
+});
+
 module.exports = app;

@@ -21,6 +21,8 @@ UserSchema.pre('save', function(next) {
     next();
 });
 
-const model = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSchema);
 
-module.exports = model;
+User.createIndexes({ email: 1 });
+
+module.exports = User;
