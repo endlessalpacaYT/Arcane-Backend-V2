@@ -27,14 +27,17 @@ app.use(helmet());
 app.use(compression()); 
 
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,  
+    windowMs: 15 * 60 * 1000, 
     max: 100,  
     message: "Too many requests from this IP, please try again later."
 });
 app.use(limiter);
 
-const apiRoutes = require('./routes/endpoint');
-app.use('/api', apiRoutes);
+const apiRoutes = require('./routes/endpoint'); 
+if (typeof apiRoutes !== 'function' && typeof apiRoutes.router !== 'object') {
+    throw new TypeError('apiRoutes should be an Express router or middleware function');
+}
+app.use('/api', apiRoutes); 
 
 app.use((req, res) => {
     res.status(404).json({ message: 'Endpoint not found' });
