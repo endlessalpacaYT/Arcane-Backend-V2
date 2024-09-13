@@ -62,6 +62,8 @@ module.exports = {
                 const newUserV2 = new UserV2({
                     Create: new Date(),
                     Banned: false,
+                    BannedReason: "Your Banned From Playing On The Arcane Backend",
+                    MatchmakerID: generateAccountId(),
                     Discord: userId,
                     Account: generateAccountId(),
                     Username: username,
