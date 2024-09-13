@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EmbedBuilder } = require('discord.js');
 const User = require('../../Models/user.js');
+const UserV2 = require('../../Models/userv2.js');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 
@@ -48,18 +49,33 @@ module.exports = {
                 return;
             }
 
-            const newUser = new User({
-                created: new Date(),
-                banned: false,
-                discordId: userId,
-                accountId: generateAccountId(),
-                username: username,
-                username_lower: username.toLowerCase(),
-                email: email,
-                password: hashedPassword
-            });
-
-            await newUser.save();
+            try {
+                const newUser = new UserV2({
+                    created: new Date(),
+                    banned: false,
+                    discordId: userId,
+                    accountId: generateAccountId(),
+                    username: username,
+                    username_lower: username.toLowerCase(),
+                    email: email,
+                    password: hashedPassword
+                });
+    
+                await newUser.save();
+            }catch {
+                const newUser = new User({
+                    created: new Date(),
+                    banned: false,
+                    discordId: userId,
+                    accountId: generateAccountId(),
+                    username: username,
+                    username_lower: username.toLowerCase(),
+                    email: email,
+                    password: hashedPassword
+                });
+    
+                await newUser.save();
+            }
 
             const embed = new EmbedBuilder()
                 .setColor("#a600ff")

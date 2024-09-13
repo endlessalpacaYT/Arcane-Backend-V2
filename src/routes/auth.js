@@ -5,6 +5,7 @@ const path = require("path");
 const iniparser = require("ini");
 const bcrypt = require("bcrypt");
 const User = require("../Models/user.js");
+const UserV2 = require("../Models/userv2.js");
 
 express.use(Express.urlencoded({ extended: true }));
 
@@ -154,11 +155,14 @@ express.get("/account/api/oauth/verify", async (req, res) => {
 express.post("/account/api/oauth/token", async (req, res) => {
     const { grant_type, username, password } = req.body;
 
-    const user = await User.findOne({ email: username });
+    var user = await UserV2.findOne({ email: username });
     if (!user) {
-        return res.status(401).json({
-            "error": "arcane.errors.invalid.email"
-        });
+        user = await User.findOne({ email: username });
+        if (!user) {
+            return res.status(401).json({
+                "error": "arcane.errors.invalid.email"
+            });
+        }
     }
     try {
         Memory_CurrentAccountId = user.username;
@@ -166,6 +170,12 @@ express.post("/account/api/oauth/token", async (req, res) => {
         Memory_CurrentAccountId = "ArcaneV2";
         return res.status(401).json({
             "error": "arcane.errors.username.not_found"
+        });
+    }
+
+    if (!user.password) {
+        return res.status(401).json({
+            "error": "arcane.errors.missing.password"
         });
     }
 
