@@ -1,29 +1,68 @@
-# Arcane-Backend-V2
-A Universal Backend For Old Builds Of Fortnite!
 
-## [ChangeLog](changelog.md)
+## Requirements
+- [ChangeLog](changelog.md)
+- [nodes](https://nodejs.org/en)
+- [mongodb](https://www.mongodb.com/)
 
-### Newest Update:
 
-#### v0.0.1
-- Got Into Lobby With The Bare Minimum
-- Added Shop
-- Renamed Structs to Utils
-- Added CloudStorage
-- Did alot on auth.js
-- Added Responses (Keychain.json)
-- Revamping index.js 
-- Adding Logging System In Utils
+## Installation
 
-##### Planned Features:
+1. **Clone the repository:**
+
+```bash
+git clone https://github.com/endlessalpacaYT/Arcane-Backend-V2/
+```
+
+2. **Install packages**
+
+```bash
+npm install
+```
+
+3. **Configure environment variables:**
+
+Rename `.example.env` to `.env` and provide the necessary information.
+
+5. **Run**
+
+```bash
+node src/index.ts
+```
+
+## What's Next?
+
+- MCP
+
+## Planned Features
+
 - [x] Login
+- [x] Easy setup
 - [x] Database (MongoDB)
-- [ ] Xmpp
-- [ ] Re-Rolling item shop
-- [ ] Working MCP
-- [ ] Challenges
-- [ ] BattlePass
-- [ ] NewsV2
+- [] Auto shop
+- [] Battle Pass
+- [] Challenges
+- [] Friends
+- [] XMPP
+- [] Working MCP
+- [] NewsV2
 - [x] Discord Bot Integration
-- [ ] Frontend
-- [x] Universal
+- [] Matchmaker
+- [] Party V1
+- [] Party V2
+- [] Daily rewards
+- [] Gifting
+- [] Purchasing from item shop
+- [] HWID Bans
+- [] Refunding
+- [] Frontend
+- [] Universal
+
+## Maybe Features?
+
+- [] IP Bans
+
+## Planned Bot Commands
+
+- [x] Register command
+- [x] Pinged command
+- [] User lookup command
