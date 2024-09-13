@@ -159,6 +159,7 @@ express.post("/account/api/oauth/token", async (req, res) => {
         Memory_CurrentAccountID = user.username;
     }catch {
         console.log(req.body);
+        Memory_CurrentAccountID = "ArcaneV2";
     }
     
 
