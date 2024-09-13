@@ -49,7 +49,7 @@ app.use((err, req, res, next) => {
 async function initDB() {
     const mongoDB = process.env.MONGODB || "mongodb://127.0.0.1:27017/Arcane";
     try {
-        await mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+        await mongoose.connect(mongoDB);
         console.log("MongoDB connected successfully!");
     } catch (err) {
         console.error("MongoDB connection error:", err);
