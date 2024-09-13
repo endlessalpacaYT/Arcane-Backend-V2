@@ -6,6 +6,8 @@ const iniparser = require("ini");
 const bcrypt = require("bcrypt");
 const User = require("../Models/user.js");
 
+express.use(Express.urlencoded({ extended: true }));
+
 var Memory_CurrentAccountID = "ArcaneV2";
 
 express.get("/account/api/public/account", async (req, res) => {
@@ -150,19 +152,29 @@ express.get("/account/api/oauth/verify", async (req, res) => {
 })
 
 express.post("/account/api/oauth/token", async (req, res) => {
-    console.log(req.body); 
-
     const { grant_type, username, password } = req.body;
-
-    if (grant_type !== 'password') {
-        return res.status(400).json({ error: 'Unsupported grant type' });
-    }
 
     const user = await User.findOne({ email: username });
     if (!user) {
-        return res.status(401).json({ error: 'Invalid email or password' });
+        return res.status(401).json({
+            "error": "arcane.errors.invalid.email"
+        });
     }
-    Memory_CurrentAccountID = user.username;
+    try {
+        Memory_CurrentAccountID = user.username;
+    }catch {
+        Memory_CurrentAccountID = "ArcaneV2";
+        return res.status(401).json({
+            "error": "arcane.errors.username.not_found"
+        });
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+        return res.status(401).json({
+            "error": "arcane.errors.invalid.password"
+        });
+    }
     
 
     if (Memory_CurrentAccountID.includes("@")) Memory_CurrentAccountID = Memory_CurrentAccountID.split("@")[0];
