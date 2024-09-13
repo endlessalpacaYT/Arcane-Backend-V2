@@ -20,5 +20,5 @@ function getRandomFullSetLength(entries) {
     return uniqueCategories.size;
   }
   
-  export default getRandomFullSetLength;
+module.exports = getRandomFullSetLength;
   

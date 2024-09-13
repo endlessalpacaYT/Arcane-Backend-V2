@@ -1,4 +1,4 @@
-export function getPrice(item) {
+function getPrice(item) {
     const rarity = item.rarity.backendValue.split("::")[1];
   
     switch (item.type.backendValue) {
@@ -84,4 +84,6 @@ export function getPrice(item) {
         break;
     }
   }
+
+  module.exports = getPrice;
   
