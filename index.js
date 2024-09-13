@@ -10,12 +10,14 @@ const PORT = process.env.PORT || 3551;
 const startTime = new Date();
 
 const functions = require("./src/utils/functions.js");
+const APIWEB = require("./src/APIWEB/index.js");
 const err = require("./src/utils/error.js");
 const shop = require("./src/Shop/shop.js");
 const friends = require("./src/routes/friends.js");
 const authRoutes = require('./src/routes/auth');
 const cloudstorage = require('./src/routes/cloudstorage.js');
 const mcp = require("./src/routes/mcp.js");
+const { Shop } = require("./src/Shop/interfaces/Dedarations.js");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
@@ -29,6 +31,11 @@ app.use(express.json());
 app.use(authRoutes);
 app.use(cloudstorage);
 app.use(mcp);
+app.use(shop);
+app.use(Shop);
+app.use(err);
+app.use(functions);
+app.use(APIWEB);
 app.use(friends);
 
 app.get('/api/runtime', (req, res) => {
