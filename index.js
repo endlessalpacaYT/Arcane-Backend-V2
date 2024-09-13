@@ -28,6 +28,15 @@ app.use(limiter);
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+    res.on('finish', () => {
+        if (res.statusCode >= 400) {
+            console.error(`Issue with request: ${req.method} ${req.url} - Status: ${res.statusCode}`);
+        }
+    });
+    next();
+});
+
 app.use(authRoutes);
 app.use(cloudstorage);
 app.use(mcp);
@@ -50,15 +59,13 @@ app.get('/api/runtime', (req, res) => {
     });
 });
 
-app.use((req, res, next) => {
-    res.on('finish', () => {
-        if (res.statusCode >= 400) {
-            console.error(`Issue with request: ${req.method} ${req.url} - Status: ${res.statusCode}`);
-        }
-    });
-    next();
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'www', 'html', 'index.html'));
 });
 
+app.get('/data', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'www', 'html', 'data.html'));
+});
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
@@ -68,15 +75,6 @@ app.use((err, req, res, next) => {
         status: 500
     });
 });
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'www', 'html', 'index.html'));
-});
-
-app.get('/data', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'www', 'html', 'data.html'));
-});
-
 
 async function initDB() {
     const mongoDB = process.env.MONGODB || "mongodb://127.0.0.1/Arcane";
