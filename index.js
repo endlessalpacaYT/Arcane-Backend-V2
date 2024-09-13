@@ -31,10 +31,6 @@ app.use(express.json());
 app.use(authRoutes);
 app.use(cloudstorage);
 app.use(mcp);
-app.use(shop);
-app.use(Shop);
-app.use(err);
-app.use(functions);
 app.use(APIWEB);
 app.use(friends);
 
