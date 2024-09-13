@@ -51,40 +51,30 @@ module.exports = {
 
             try {
                 const newUser = new UserV2({
-                    created: new Date(),
-                    banned: false,
-                    discordId: userId,
-                    accountId: generateAccountId(),
-                    username: username,
-                    username_lower: username.toLowerCase(),
-                    email: email,
-                    password: hashedPassword
+                    Create: new Date(),
+                    Banned: false,
+                    DiscordId: userId,
+                    AccountId: generateAccountId(),
+                    Username: username,
+                    Username_lower: username.toLowerCase(),
+                    Email: email,
+                    Password: hashedPassword
                 });
     
                 await newUser.save();
-            }catch {
-                const newUser = new User({
-                    created: new Date(),
-                    banned: false,
-                    discordId: userId,
-                    accountId: generateAccountId(),
-                    username: username,
-                    username_lower: username.toLowerCase(),
-                    email: email,
-                    password: hashedPassword
-                });
-    
-                await newUser.save();
+
+                const embed = new EmbedBuilder()
+                    .setColor("#a600ff")
+                    .setTitle("Successfully Registered")
+                    .setDescription("Registered With The Username: " + username);
+
+                await interaction.reply({ embeds: [embed], ephemeral: true });
+            } catch (error) {
+                console.error('Error saving user:', error);
+                await interaction.reply({ content: 'There was an error saving your account. Please try again later.', ephemeral: true });
             }
-
-            const embed = new EmbedBuilder()
-                .setColor("#a600ff")
-                .setTitle("Successfully Registered")
-                .setDescription("Registered With The Username: " + username);
-
-            await interaction.reply({ embeds: [embed], ephemeral: true });
         } catch (error) {
-            console.error('Error registering user:', error);
+            console.error('Error checking existing user:', error);
             await interaction.reply({ content: 'There was an error registering your account. Please try again later.', ephemeral: true });
         }
     }
