@@ -245,6 +245,21 @@ app.post("/fortnite/api/game/v2/profile/:backend/client/SetCosmeticLockerBanner"
     return res.status(200).json(response);
 });
 
+app.post("/datarouter/api/v1/public/data", (req, res) => {
+    res.status(200).json({
+        status: "ok"
+    });
+});
+
+app.post('/presence/api/v1/Fortnite/:accountId/subscriptions/broadcast', (req, res) => {
+    const accountId = req.params.accountId;
+
+    return res.status(200).json({
+        "status": "success",
+        "message": `Presence broadcast received for account: ${accountId}`
+    });
+});
+
 app.use((err, req, res, next) => {
     console.error(`[ERROR] ${err.message}`);
     res.status(500).json({ error: 'Something went wrong' });

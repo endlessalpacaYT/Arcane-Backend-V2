@@ -3,8 +3,10 @@ const express = Express.Router();
 const fs = require("fs");
 const path = require("path");
 const iniparser = require("ini");
+const bcrypt = require("bcrypt");
+const User = require("../Models/user.js");
 
-var Memory_CurrentAccountID = "BackendS12";
+var Memory_CurrentAccountID = "ArcaneV2";
 
 express.get("/account/api/public/account", async (req, res) => {
     var response = [];
