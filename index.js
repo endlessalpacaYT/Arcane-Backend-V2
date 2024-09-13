@@ -13,7 +13,6 @@ const functions = require("./src/utils/functions.js");
 const err = require("./src/utils/error.js");
 const shop = require("./src/Shop/shop.js");
 const friends = require("./src/routes/friends.js");
-const chartRoutes = require('./src/routes/chart.js');
 const authRoutes = require('./src/routes/auth');
 const cloudstorage = require('./src/routes/cloudstorage.js');
 const mcp = require("./src/routes/mcp.js");
@@ -31,7 +30,6 @@ app.use(authRoutes);
 app.use(cloudstorage);
 app.use(mcp);
 app.use(friends);
-app.use(chartRoutes);
 
 app.get('/api/runtime', (req, res) => {
     const now = new Date();
