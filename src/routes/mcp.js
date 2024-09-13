@@ -59,7 +59,6 @@ app.post("/fortnite/api/game/v2/profile/:backend/client/SetReceiveGiftsEnabled",
 
 app.post("/fortnite/api/game/v2/profile/:backend/client/ClientQuestLogin", (req, res) => {
     try {
-        const { backend } = req.params;
         const { profileId, rvn } = req.query;
 
         const validProfiles = ['athena'];
@@ -69,8 +68,6 @@ app.post("/fortnite/api/game/v2/profile/:backend/client/ClientQuestLogin", (req,
         if (!rvn) {
             return res.status(400).json({ error: 'Missing revision number (rvn)' });
         }
-
-        console.log(`[INFO] Backend: ${backend}, Profile ID: ${profileId}, RVN: ${rvn}`);
 
         const questId = "mock_quest_id";
         if (!questData[profileId].questsCompleted.includes(questId)) {
@@ -263,25 +260,6 @@ app.post('/presence/api/v1/Fortnite/:accountId/subscriptions/broadcast', (req, r
 app.use((err, req, res, next) => {
     console.error(`[ERROR] ${err.message}`);
     res.status(500).json({ error: 'Something went wrong' });
-});
-
-app.get('/fortnite/api/game/v2/enabled_features', (req, res) => {
-    const enabledFeaturesResponse = [
-        {
-            "featureName": "BattleRoyale",
-            "enabled": true
-        },
-        {
-            "featureName": "CreativeMode",
-            "enabled": false
-        },
-        {
-            "featureName": "SaveTheWorld",
-            "enabled": false
-        }
-    ];
-
-    res.status(200).json(enabledFeaturesResponse);
 });
 
 module.exports = app;
