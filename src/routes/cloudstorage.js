@@ -3,7 +3,7 @@ const express = Express.Router();
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
-const functions = require("../utils/functions.js");
+const functions = require("../src/utils/functions.js");
 
 express.use((req, res, next) => {
     if (req.originalUrl.toLowerCase().startsWith("/fortnite/api/cloudstorage/user/") && req.method == "PUT") {
