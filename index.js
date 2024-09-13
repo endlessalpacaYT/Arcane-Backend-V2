@@ -9,12 +9,14 @@ const PORT = process.env.PORT || 3551
 const functions = require("./utils/functions.js");
 const shop = require("./Shop/shop.js");
 
+const friends = require("./routes/friends.js");
 const authRoutes = require('./routes/auth');
 const cloudstorage = require('./routes/cloudstorage.js');
 const mcp = require("./routes/mcp.js");
 app.use(authRoutes);
 app.use(cloudstorage);
 app.use(mcp);
+app.use(friends);
 
 app.use((req, res, next) => {
     const originalSend = res.send;
