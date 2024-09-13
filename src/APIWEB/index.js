@@ -52,3 +52,5 @@ app.listen(port, ip, () => {
     logger.info(`The API is running on ${ip}:${port}`);
     console.log(`[${new Date().toISOString()}] The API is running on ${ip}:${port}`);
 });
+
+module.exports = app;
