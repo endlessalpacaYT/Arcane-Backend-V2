@@ -48,8 +48,8 @@ express.get("/account/api/public/account/:accountId", async (req, res) => {
     res.json({
         "id": req.params.accountId,
         "displayName": Memory_CurrentAccountID,
-        "name": "Lawin",
-        "email": Memory_CurrentAccountID + "@lawin.com",
+        "name": "Arcane",
+        "email": Memory_CurrentAccountID + "@arcane.com",
         "failedLoginAttempts": 0,
         "lastLogin": new Date().toISOString(),
         "numberOfDisplayNameChanges": 0,
@@ -76,12 +76,12 @@ express.get("/sdk/v1/*", async (req, res) => {
 
 express.post("/auth/v1/oauth/token", async (req, res) => {
     res.json({
-        "access_token": "lawinstokenlol",
+        "access_token": "arcanetoken",
         "token_type": "bearer",
         "expires_in": 28800,
         "expires_at": "9999-12-31T23:59:59.999Z",
-        "deployment_id": "lawinsdeploymentidlol",
-        "organization_id": "lawinsorganizationidlol",
+        "deployment_id": "arcanedeploymentid",
+        "organization_id": "arcaneorganizationid",
         "product_id": "prod-fn",
         "sandbox_id": "fn"
     })
@@ -101,17 +101,17 @@ express.post("/epic/oauth/v2/token", async (req, res) => {
     res.json({
         "scope": "basic_profile friends_list openid presence",
         "token_type": "bearer",
-        "access_token": "lawinstokenlol",
+        "access_token": "arcanetoken",
         "expires_in": 28800,
         "expires_at": "9999-12-31T23:59:59.999Z",
-        "refresh_token": "lawinstokenlol",
+        "refresh_token": "arcanetoken",
         "refresh_expires_in": 86400,
         "refresh_expires_at": "9999-12-31T23:59:59.999Z",
         "account_id": Memory_CurrentAccountID,
-        "client_id": "lawinsclientidlol",
-        "application_id": "lawinsapplicationidlol",
+        "client_id": "arcaneclientid",
+        "application_id": "arcaneapplicationid",
         "selected_account_id": Memory_CurrentAccountID,
-        "id_token": "lawinstokenlol"
+        "id_token": "arcanetoken"
     })
 })
 
@@ -131,10 +131,10 @@ express.delete("/account/api/oauth/sessions/kill/*", async (req, res) => {
 
 express.get("/account/api/oauth/verify", async (req, res) => {
     res.json({
-        "token": "lawinstokenlol",
+        "token": "arcanetoken",
         "session_id": "3c3662bcb661d6de679c636744c66b62",
         "token_type": "bearer",
-        "client_id": "lawinsclientidlol",
+        "client_id": "arcaneclientid",
         "internal_client": true,
         "client_service": "fortnite",
         "account_id": Memory_CurrentAccountID,
@@ -144,33 +144,33 @@ express.get("/account/api/oauth/verify", async (req, res) => {
         "display_name": Memory_CurrentAccountID,
         "app": "fortnite",
         "in_app_id": Memory_CurrentAccountID,
-        "device_id": "lawinsdeviceidlol"
+        "device_id": "arcanedeviceid"
     })
 })
 
 express.post("/account/api/oauth/token", async (req, res) => {
     if (false) {
-        Memory_CurrentAccountID = req.body.username || "LawinServer"
+        Memory_CurrentAccountID = req.body.username || "ArcaneV2"
     }
 
     if (Memory_CurrentAccountID.includes("@")) Memory_CurrentAccountID = Memory_CurrentAccountID.split("@")[0];
 
     res.json({
-        "access_token": "lawinstokenlol",
+        "access_token": "arcanetoken",
         "expires_in": 28800,
         "expires_at": "9999-12-02T01:12:01.100Z",
         "token_type": "bearer",
-        "refresh_token": "lawinstokenlol",
+        "refresh_token": "arcanetoken",
         "refresh_expires": 86400,
         "refresh_expires_at": "9999-12-02T01:12:01.100Z",
         "account_id": Memory_CurrentAccountID,
-        "client_id": "lawinsclientidlol",
+        "client_id": "arcaneclientid",
         "internal_client": true,
         "client_service": "fortnite",
         "displayName": Memory_CurrentAccountID,
         "app": "fortnite",
         "in_app_id": Memory_CurrentAccountID,
-        "device_id": "lawinsdeviceidlol"
+        "device_id": "arcanedeviceid"
     })
 })
 
