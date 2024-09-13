@@ -130,6 +130,121 @@ app.post("/fortnite/api/game/v2/profile/:backend/client/QueryProfile", (req, res
     return res.status(404).json({ error: "Profile not found" });
 });
 
+app.post("/fortnite/api/game/v2/profile/:backend/client/SetCosmeticLockerSlot", async (req, res) => {
+    const backend = req.params.backend; 
+    const { rvn, profileId, slotName, itemToSlot } = req.body;  
+
+    console.log(`Profile ID: ${profileId}, Slot Name: ${slotName}, Item to Slot: ${itemToSlot}`);
+
+    if (!profileId || !rvn || !slotName || !itemToSlot) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const lockerState = {
+        profileRevision: parseInt(rvn) + 1,
+        profileId: profileId,
+        locker: {
+            character: "CID_001_Athena_Commando_F_Default",
+            backpack: "BID_001_BackBling_Default",
+            pickaxe: "Pickaxe_Lockjaw",
+            glider: "Glider_ID_001_Default",
+            emotes: [
+                "EID_Wave",
+                "EID_Clap"
+            ]
+        }
+    };
+
+    lockerState.locker[slotName] = itemToSlot;
+
+    const response = {
+        profileRevision: lockerState.profileRevision,
+        profileId: profileId,
+        profileChangesBaseRevision: rvn,
+        profileChanges: [
+            {
+                changeType: "statModified",
+                name: slotName,
+                value: itemToSlot
+            }
+        ],
+        profileCommandRevision: lockerState.profileRevision,
+        serverTime: new Date().toISOString(),
+        responseVersion: 1
+    };
+
+    console.log(`Updated Locker Slot: ${slotName}, Item: ${itemToSlot}`);
+
+    return res.status(200).json(response);
+});
+
+app.post("/fortnite/api/game/v2/profile/:accountId/dedicated_server/:operation", async (req, res) => {
+    const { accountId, operation } = req.params;
+    const { rvn, profileId } = req.body; 
+
+    console.log(`Account ID: ${accountId}, Operation: ${operation}`);
+
+    if (!profileId || !rvn) {
+        return res.status(400).json({ error: 'Invalid request data' });
+    }
+
+    const profileRevision = rvn + 1;
+
+    const response = {
+        profileRevision: profileRevision,
+        profileId: profileId,
+        profileChangesBaseRevision: rvn,
+        profileChanges: [
+            {
+                changeType: "operation",
+                operationType: operation,
+                success: true
+            }
+        ],
+        profileCommandRevision: profileRevision,
+        serverTime: new Date().toISOString(),
+        responseVersion: 1
+    };
+
+    return res.status(200).json(response);
+});
+
+app.post("/fortnite/api/game/v2/profile/:backend/client/SetCosmeticLockerBanner", async (req, res) => {
+    const backend = req.params.backend;
+    const { rvn, profileId, bannerIconId, bannerColorId } = req.body;
+
+    console.log(`Profile ID: ${profileId}, Banner Icon: ${bannerIconId}, Banner Color: ${bannerColorId}`);
+
+    if (!profileId || !rvn || !bannerIconId || !bannerColorId) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const profileRevision = rvn + 1;
+
+    const response = {
+        profileRevision: profileRevision,
+        profileId: profileId,
+        profileChangesBaseRevision: rvn,
+        profileChanges: [
+            {
+                changeType: "statModified",
+                name: "banner_icon",
+                value: bannerIconId
+            },
+            {
+                changeType: "statModified",
+                name: "banner_color",
+                value: bannerColorId
+            }
+        ],
+        profileCommandRevision: profileRevision,
+        serverTime: new Date().toISOString(),
+        responseVersion: 1
+    };
+
+    return res.status(200).json(response);
+});
+
 app.use((err, req, res, next) => {
     console.error(`[ERROR] ${err.message}`);
     res.status(500).json({ error: 'Something went wrong' });
