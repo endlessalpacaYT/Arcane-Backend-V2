@@ -26,7 +26,7 @@ Rename `.example.env` to `.env` and provide the necessary information.
 5. **Run**
 
 ```bash
-node src/index.ts
+node index.js
 ```
 
 ## What's Next?
