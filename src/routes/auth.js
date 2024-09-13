@@ -83,7 +83,8 @@ express.post("/auth/v1/oauth/token", async (req, res) => {
         "deployment_id": "arcanedeploymentid",
         "organization_id": "arcaneorganizationid",
         "product_id": "prod-fn",
-        "sandbox_id": "fn"
+        "sandbox_id": "fn",
+        "displayName": Memory_CurrentAccountID
     })
 })
 
@@ -149,9 +150,20 @@ express.get("/account/api/oauth/verify", async (req, res) => {
 })
 
 express.post("/account/api/oauth/token", async (req, res) => {
-    if (false) {
-        Memory_CurrentAccountID = req.body.username || "ArcaneV2"
+    console.log(req.body); 
+
+    const { grant_type, username, password } = req.body;
+
+    if (grant_type !== 'password') {
+        return res.status(400).json({ error: 'Unsupported grant type' });
     }
+
+    const user = await User.findOne({ email: username });
+    if (!user) {
+        return res.status(401).json({ error: 'Invalid email or password' });
+    }
+    Memory_CurrentAccountID = user.username;
+    
 
     if (Memory_CurrentAccountID.includes("@")) Memory_CurrentAccountID = Memory_CurrentAccountID.split("@")[0];
 
