@@ -5,13 +5,13 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3551;
 
-const functions = require("./utils/functions.js");
-const err = require("./utils/error.js");
-const shop = require("./Shop/shop.js");
-const friends = require("./routes/friends.js");
-const authRoutes = require('./routes/auth');
-const cloudstorage = require('./routes/cloudstorage.js');
-const mcp = require("./routes/mcp.js");
+const functions = require("./src/utils/functions.js");
+const err = require("./src/utils/error.js");
+const shop = require("./src/Shop/shop.js");
+const friends = require("./src/routes/friends.js");
+const authRoutes = require('./src/routes/auth');
+const cloudstorage = require('./src/routes/cloudstorage.js');
+const mcp = require("./src/routes/mcp.js");
 
 app.use(express.json());
 
@@ -67,7 +67,7 @@ async function startHTTPServer() {
 async function startMain() {
     await initDB();  
     await startHTTPServer();
-    require("./discord/index.js");  
+    require("./src/discord/index.js");  
 }
 
 function startBackend() {
