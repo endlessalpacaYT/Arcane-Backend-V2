@@ -150,19 +150,14 @@ express.get("/account/api/oauth/verify", async (req, res) => {
 })
 
 express.post("/account/api/oauth/token", async (req, res) => {
-    console.log(req.body); 
-
     const { grant_type, username, password } = req.body;
 
-    if (grant_type !== 'password') {
-        return res.status(400).json({ error: 'Unsupported grant type' });
-    }
-
     const user = await User.findOne({ email: username });
-    if (!user) {
-        return res.status(401).json({ error: 'Invalid email or password' });
+    try {
+        Memory_CurrentAccountID = user.username;
+    }catch {
+        console.log(req.body);
     }
-    Memory_CurrentAccountID = user.username;
     
 
     if (Memory_CurrentAccountID.includes("@")) Memory_CurrentAccountID = Memory_CurrentAccountID.split("@")[0];

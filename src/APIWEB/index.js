@@ -9,7 +9,7 @@ dotenv.config();
 
 const app = express();
 const ip = process.env.IP || '127.0.0.1';
-const port = process.env.PORT || 5555;
+const port = process.env.API_WEBSERVICE_PORT || 5555;
 
 const logger = winston.createLogger({
     level: 'info',
