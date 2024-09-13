@@ -38,31 +38,31 @@ node src/index.ts
 - [x] Login
 - [x] Easy setup
 - [x] Database (MongoDB)
-- [] Auto shop
-- [] Battle Pass
-- [] Challenges
-- [] Friends
-- [] XMPP
-- [] Working MCP
-- [] NewsV2
+- [ ] Auto shop
+- [ ] Battle Pass
+- [ ] Challenges
+- [ ] Friends
+- [ ] XMPP
+- [ ] Working MCP
+- [ ] NewsV2
 - [x] Discord Bot Integration
-- [] Matchmaker
-- [] Party V1
-- [] Party V2
-- [] Daily rewards
-- [] Gifting
-- [] Purchasing from item shop
-- [] HWID Bans
-- [] Refunding
-- [] Frontend
-- [] Universal
+- [ ] Matchmaker
+- [ ] Party V1
+- [ ] Party V2
+- [ ] Daily rewards
+- [ ] Gifting
+- [ ] Purchasing from item shop
+- [ ] HWID Bans
+- [ ] Refunding
+- [ ] Frontend
+- [ ] Universal
 
 ## Maybe Features?
 
-- [] IP Bans
+- [ ] IP Bans
 
 ## Planned Bot Commands
 
 - [x] Register command
 - [x] Pinged command
-- [] User lookup command
+- [ ] User lookup command
