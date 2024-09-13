@@ -155,8 +155,8 @@ express.get("/account/api/oauth/verify", async (req, res) => {
 express.post("/account/api/oauth/token", async (req, res) => {
     const { grant_type, username, password } = req.body;
 
-    var user = await UserV2.findOne({ Email: username });
-    if (!user) {
+    var userV2 = await UserV2.findOne({ Email: username });
+    if (!userV2) {
         user = await User.findOne({ email: username });
         if (!user) {
             return res.status(401).json({
@@ -165,7 +165,11 @@ express.post("/account/api/oauth/token", async (req, res) => {
         }
     }
     try {
-        Memory_CurrentAccountId = user.Username;
+        if (userV2) {
+            Memory_CurrentAccountId = userV2.Username;
+        }else {
+            Memory_CurrentAccountId = user.username;
+        }
     }catch {
         Memory_CurrentAccountId = "ArcaneV2";
         return res.status(401).json({
@@ -173,19 +177,35 @@ express.post("/account/api/oauth/token", async (req, res) => {
         });
     }
 
-    if (!user.Password) {
-        return res.status(401).json({
-            "error": "arcane.errors.missing.password"
-        });
+    if (userV2) {
+        if (!userV2.Password) {
+            return res.status(401).json({
+                "error": "arcane.errors.missing.password"
+            });
+        }
+    }else {
+        if (!user.Password) {
+            return res.status(401).json({
+                "error": "arcane.errors.missing.password"
+            });
+        }
     }
 
-    const validPassword = await bcrypt.compare(password, user.Password);
-    if (!validPassword) {
-        return res.status(401).json({
-            "error": "arcane.errors.invalid.password"
-        });
+    if (userV2) {
+        const validPassword = await bcrypt.compare(password, userV2.Password);
+        if (!validPassword) {
+            return res.status(401).json({
+                "error": "arcane.errors.invalid.password"
+            });
+        }
+    }else {
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+            return res.status(401).json({
+                "error": "arcane.errors.invalid.password"
+            });
+        }
     }
-    
 
     if (Memory_CurrentAccountId.includes("@")) Memory_CurrentAccountId = Memory_CurrentAccountId.split("@")[0];
 
