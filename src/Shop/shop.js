@@ -2,7 +2,6 @@ const fetch = require("node-fetch");
 const fs = require("fs/promises");
 const path = require("path");
 const uuid = require("uuid").v4;
-const { config, logger } = require("..");
 const { CosmeticTypes } = require("./enums/CosmeticTypes");
 const { ShopHelper } = require("./helpers/shophelper");
 const { createBattlePassEntryTemplate, createItemEntryTemplate } = require("./helpers/template");
