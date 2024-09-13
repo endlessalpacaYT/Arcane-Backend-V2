@@ -155,7 +155,7 @@ express.get("/account/api/oauth/verify", async (req, res) => {
 express.post("/account/api/oauth/token", async (req, res) => {
     const { grant_type, username, password } = req.body;
 
-    var user = await UserV2.findOne({ email: username });
+    var user = await UserV2.findOne({ Email: username });
     if (!user) {
         user = await User.findOne({ email: username });
         if (!user) {
@@ -165,7 +165,7 @@ express.post("/account/api/oauth/token", async (req, res) => {
         }
     }
     try {
-        Memory_CurrentAccountId = user.username;
+        Memory_CurrentAccountId = user.Username;
     }catch {
         Memory_CurrentAccountId = "ArcaneV2";
         return res.status(401).json({
@@ -173,13 +173,13 @@ express.post("/account/api/oauth/token", async (req, res) => {
         });
     }
 
-    if (!user.password) {
+    if (!user.Password) {
         return res.status(401).json({
             "error": "arcane.errors.missing.password"
         });
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
+    const validPassword = await bcrypt.compare(password, user.Password);
     if (!validPassword) {
         return res.status(401).json({
             "error": "arcane.errors.invalid.password"
