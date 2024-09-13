@@ -4,7 +4,7 @@ A Universal Backend For Old Builds Of Fortnite!
 [ChangeLog](changelog.md)
 
 ## Planned Features:
-- [ ] Login
+- [x] Login
 - [x] Database (MongoDB)
 - [ ] Xmpp
 - [ ] Re-Rolling item shop
@@ -14,4 +14,4 @@ A Universal Backend For Old Builds Of Fortnite!
 - [ ] NewsV2
 - [x] Discord Bot Integration
 - [ ] Frontend
-- [ ] Universal
+- [x] Universal
