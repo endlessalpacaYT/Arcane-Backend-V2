@@ -8,30 +8,30 @@ const User = require("../Models/user.js");
 
 express.use(Express.urlencoded({ extended: true }));
 
-var Memory_CurrentAccountID = "ArcaneV2";
+var Memory_CurrentAccountId = "ArcaneV2";
 
 express.get("/account/api/public/account", async (req, res) => {
     var response = [];
 
-    if (typeof req.query.accountId == "string") {
-        var accountId = req.query.accountId;
-        if (accountId.includes("@")) accountId = accountId.split("@")[0];
+    if (typeof req.query.AccountId == "string") {
+        var AccountId = req.query.AccountId;
+        if (AccountId.includes("@")) AccountId = AccountId.split("@")[0];
 
         response.push({
-            "id": accountId,
-            "displayName": accountId,
+            "id": AccountId,
+            "displayName": AccountId,
             "externalAuths": {}
         })
     }
 
-    if (Array.isArray(req.query.accountId)) {
-        for (var x in req.query.accountId) {
-            var accountId = req.query.accountId[x];
-            if (accountId.includes("@")) accountId = accountId.split("@")[0];
+    if (Array.isArray(req.query.AccountId)) {
+        for (var x in req.query.AccountId) {
+            var AccountId = req.query.AccountId[x];
+            if (AccountId.includes("@")) AccountId = AccountId.split("@")[0];
 
             response.push({
-                "id": accountId,
-                "displayName": accountId,
+                "id": AccountId,
+                "displayName": AccountId,
                 "externalAuths": {}
             })
         }
@@ -40,18 +40,18 @@ express.get("/account/api/public/account", async (req, res) => {
     res.json(response)
 })
 
-express.get("/account/api/public/account/:accountId", async (req, res) => {
+express.get("/account/api/public/account/:AccountId", async (req, res) => {
     if (true) {
-        Memory_CurrentAccountID = req.params.accountId;
+        Memory_CurrentAccountId = req.params.AccountId;
     }
 
-    if (Memory_CurrentAccountID.includes("@")) Memory_CurrentAccountID = Memory_CurrentAccountID.split("@")[0];
+    if (Memory_CurrentAccountId.includes("@")) Memory_CurrentAccountId = Memory_CurrentAccountId.split("@")[0];
 
     res.json({
-        "id": req.params.accountId,
-        "displayName": Memory_CurrentAccountID,
+        "id": req.params.AccountId,
+        "displayName": Memory_CurrentAccountId,
         "name": "Arcane",
-        "email": Memory_CurrentAccountID + "@arcane.com",
+        "email": Memory_CurrentAccountId + "@arcane.com",
         "failedLoginAttempts": 0,
         "lastLogin": new Date().toISOString(),
         "numberOfDisplayNameChanges": 0,
@@ -86,14 +86,14 @@ express.post("/auth/v1/oauth/token", async (req, res) => {
         "organization_id": "arcaneorganizationid",
         "product_id": "prod-fn",
         "sandbox_id": "fn",
-        "displayName": Memory_CurrentAccountID
+        "displayName": Memory_CurrentAccountId
     })
 })
 
 express.get("/epic/id/v2/sdk/accounts", async (req, res) => {
     res.json([{
-        "accountId": Memory_CurrentAccountID,
-        "displayName": Memory_CurrentAccountID,
+        "AccountId": Memory_CurrentAccountId,
+        "displayName": Memory_CurrentAccountId,
         "preferredLanguage": "en",
         "cabinedMode": false,
         "empty": false
@@ -110,10 +110,10 @@ express.post("/epic/oauth/v2/token", async (req, res) => {
         "refresh_token": "arcanetoken",
         "refresh_expires_in": 86400,
         "refresh_expires_at": "9999-12-31T23:59:59.999Z",
-        "account_id": Memory_CurrentAccountID,
+        "account_id": Memory_CurrentAccountId,
         "client_id": "arcaneclientid",
         "application_id": "arcaneapplicationid",
-        "selected_account_id": Memory_CurrentAccountID,
+        "selected_account_id": Memory_CurrentAccountId,
         "id_token": "arcanetoken"
     })
 })
@@ -140,13 +140,13 @@ express.get("/account/api/oauth/verify", async (req, res) => {
         "client_id": "arcaneclientid",
         "internal_client": true,
         "client_service": "fortnite",
-        "account_id": Memory_CurrentAccountID,
+        "account_id": Memory_CurrentAccountId,
         "expires_in": 28800,
         "expires_at": "9999-12-02T01:12:01.100Z",
         "auth_method": "exchange_code",
-        "display_name": Memory_CurrentAccountID,
+        "display_name": Memory_CurrentAccountId,
         "app": "fortnite",
-        "in_app_id": Memory_CurrentAccountID,
+        "in_app_id": Memory_CurrentAccountId,
         "device_id": "arcanedeviceid"
     })
 })
@@ -161,9 +161,9 @@ express.post("/account/api/oauth/token", async (req, res) => {
         });
     }
     try {
-        Memory_CurrentAccountID = user.username;
+        Memory_CurrentAccountId = user.username;
     }catch {
-        Memory_CurrentAccountID = "ArcaneV2";
+        Memory_CurrentAccountId = "ArcaneV2";
         return res.status(401).json({
             "error": "arcane.errors.username.not_found"
         });
@@ -177,7 +177,7 @@ express.post("/account/api/oauth/token", async (req, res) => {
     }
     
 
-    if (Memory_CurrentAccountID.includes("@")) Memory_CurrentAccountID = Memory_CurrentAccountID.split("@")[0];
+    if (Memory_CurrentAccountId.includes("@")) Memory_CurrentAccountId = Memory_CurrentAccountId.split("@")[0];
 
     res.json({
         "access_token": "arcanetoken",
@@ -187,13 +187,13 @@ express.post("/account/api/oauth/token", async (req, res) => {
         "refresh_token": "arcanetoken",
         "refresh_expires": 86400,
         "refresh_expires_at": "9999-12-02T01:12:01.100Z",
-        "account_id": Memory_CurrentAccountID,
+        "account_id": Memory_CurrentAccountId,
         "client_id": "arcaneclientid",
         "internal_client": true,
         "client_service": "fortnite",
-        "displayName": Memory_CurrentAccountID,
+        "displayName": Memory_CurrentAccountId,
         "app": "fortnite",
-        "in_app_id": Memory_CurrentAccountID,
+        "in_app_id": Memory_CurrentAccountId,
         "device_id": "arcanedeviceid"
     })
 })
@@ -254,7 +254,7 @@ express.post('/fortnite/api/game/v2/grant_access/:backend', (req, res) => {
     const backend = req.params.backend;
 
     const grantAccessResponse = {
-        "accountId": "94b1569506b04f9f8557af611e8c5e47",  
+        "AccountId": "94b1569506b04f9f8557af611e8c5e47",  
         "backendName": backend,
         "accessGranted": true,
         "message": `${backend} access granted.`

@@ -2,14 +2,19 @@ const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema(
     {
-        created: { type: Date, required: true, default: Date.now },
-        banned: { type: Boolean, default: false },
-        discordId: { type: String, required: true, unique: true },
-        accountId: { type: String, required: true, unique: true },
-        username: { type: String, required: true, unique: true },
-        username_lower: { type: String, required: true, unique: true },
-        email: { type: String, required: true, unique: true },
-        password: { type: String, required: true },
+        Create: { type: Date, required: true, default: Date.now },
+        Banned: { type: Boolean, default: false },
+        BannedReason: { type: String, required: true, unique: true },
+        BannedExpire: { type: Date, required: true, default: Date.now },
+        BannedMatchmaker: { type: String, required: true, unique: true },
+        BannedMatchmakerExpire: { type: Date, required: true, default: Date.now },
+        MatchmakerID: { type: String, required: true, unique: true },
+        DiscordId: { type: String, required: true, unique: true },
+        AccountId: { type: String, required: true, unique: true },
+        Username: { type: String, required: true, unique: true },
+        Username_Lower: { type: String, required: true, unique: true },
+        Email: { type: String, required: true, unique: true },
+        Password: { type: String, required: true },
     },
     {
         collection: "users"

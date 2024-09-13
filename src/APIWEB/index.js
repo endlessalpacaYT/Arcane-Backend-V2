@@ -9,13 +9,8 @@ const { generateApiKey, getApiKeys } = require('./routes/apikeys');
 dotenv.config();
 
 const app = express();
-<<<<<<< HEAD
 const ip = process.env.IPV1 || '127.0.0.1';
 const port = process.env.PORTV1 || 5555;
-=======
-const ip = process.env.IP || '127.0.0.1';
-const port = process.env.API_WEBSERVICE_PORT || 5555;
->>>>>>> a3416b002cb3ccf711f55bcd0cb9c92b5f39df37
 
 const version = process.env.VERSIONV2 || "0.0.1.0";
 const backend = process.env.BACKENDV2 || "ArcaneV2";
