@@ -64,8 +64,8 @@ express.get("/fortnite/api/cloudstorage/system/:file", async (req, res) => {
 
 express.get("/fortnite/api/cloudstorage/user/*/:file", async (req, res) => {
     try {
-        if (!fs.existsSync(path.join(process.env.LOCALAPPDATA, "LawinServer", "ClientSettings"))) {
-            fs.mkdirSync(path.join(process.env.LOCALAPPDATA, "LawinServer", "ClientSettings"));
+        if (!fs.existsSync(path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings"))) {
+            fs.mkdirSync(path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings"));
         }
     } catch (err) {}
 
@@ -82,7 +82,7 @@ express.get("/fortnite/api/cloudstorage/user/*/:file", async (req, res) => {
     var currentBuildID = memory.CL;
 
     let file;
-    if (process.env.LOCALAPPDATA) file = path.join(process.env.LOCALAPPDATA, "LawinServer", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
+    if (process.env.LOCALAPPDATA) file = path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
     else file = path.join(__dirname, "..", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
 
     if (fs.existsSync(file)) {
@@ -97,8 +97,8 @@ express.get("/fortnite/api/cloudstorage/user/*/:file", async (req, res) => {
 
 express.get("/fortnite/api/cloudstorage/user/:accountId", async (req, res) => {
     try {
-        if (!fs.existsSync(path.join(process.env.LOCALAPPDATA, "LawinServer", "ClientSettings"))) {
-            fs.mkdirSync(path.join(process.env.LOCALAPPDATA, "LawinServer", "ClientSettings"));
+        if (!fs.existsSync(path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings"))) {
+            fs.mkdirSync(path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings"));
         }
     } catch (err) {}
 
@@ -109,7 +109,7 @@ express.get("/fortnite/api/cloudstorage/user/:accountId", async (req, res) => {
     var currentBuildID = memory.CL;
     
     let file;
-    if (process.env.LOCALAPPDATA) file = path.join(process.env.LOCALAPPDATA, "LawinServer", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
+    if (process.env.LOCALAPPDATA) file = path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
     else file = path.join(__dirname, "..", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
 
     if (fs.existsSync(file)) {
@@ -136,8 +136,8 @@ express.get("/fortnite/api/cloudstorage/user/:accountId", async (req, res) => {
 
 express.put("/fortnite/api/cloudstorage/user/*/:file", async (req, res) => {
     try {
-        if (!fs.existsSync(path.join(process.env.LOCALAPPDATA, "LawinServer", "ClientSettings"))) {
-            fs.mkdirSync(path.join(process.env.LOCALAPPDATA, "LawinServer", "ClientSettings"));
+        if (!fs.existsSync(path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings"))) {
+            fs.mkdirSync(path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings"));
         }
     } catch (err) {}
 
@@ -152,7 +152,7 @@ express.put("/fortnite/api/cloudstorage/user/*/:file", async (req, res) => {
     var currentBuildID = memory.CL;
 
     let file;
-    if (process.env.LOCALAPPDATA) file = path.join(process.env.LOCALAPPDATA, "LawinServer", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
+    if (process.env.LOCALAPPDATA) file = path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
     else file = path.join(__dirname, "..", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
 
     fs.writeFileSync(file, req.rawBody, 'latin1');
