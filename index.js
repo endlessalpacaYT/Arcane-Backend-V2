@@ -79,10 +79,10 @@ app.get('/data', (req, res) => {
 
 
 async function initDB() {
-    const mongoDB = process.env.MONGODB || "mongodb://127.0.0.1/ArcaneV2";
+    const mongoDB = process.env.MONGODB || "mongodb://127.0.0.1/Arcane";
     try {
         await mongoose.connect(mongoDB);
-        console.log("MongoDB connected successfully!");
+        console.log("MongoDB connected successfully to: " + mongoDB);
     } catch (err) {
         console.error("MongoDB connection error:", err);
         console.log("Closing in 5 seconds...");
