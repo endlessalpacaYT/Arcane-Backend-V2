@@ -6,6 +6,8 @@ const iniparser = require("ini");
 const bcrypt = require("bcrypt");
 const User = require("../Models/user.js");
 
+express.use(Express.urlencoded({ extended: true }));
+
 var Memory_CurrentAccountID = "ArcaneV2";
 
 express.get("/account/api/public/account", async (req, res) => {
