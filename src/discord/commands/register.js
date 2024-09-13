@@ -50,15 +50,24 @@ module.exports = {
             }
 
             try {
+<<<<<<< Updated upstream
                 const newUser = new UserV2({
                     Create: new Date(),
                     Banned: false,
                     DiscordId: userId,
                     AccountId: generateAccountId(),
+=======
+                const newUserV2 = new UserV2({
+                    Create: Date.now(),
+                    Banned: false,
+                    Discord: userId,
+                    Account: generateAccountId(),
+>>>>>>> Stashed changes
                     Username: username,
                     Username_lower: username.toLowerCase(),
                     Email: email,
                     Password: hashedPassword
+<<<<<<< Updated upstream
                 });
     
                 await newUser.save();
@@ -72,6 +81,25 @@ module.exports = {
             } catch (error) {
                 console.error('Error saving user:', error);
                 await interaction.reply({ content: 'There was an error saving your account. Please try again later.', ephemeral: true });
+=======
+                });
+    
+                await newUserV2.save();
+            }catch {
+                const newUser = new User({
+                    created: new Date(),
+                    banned: false,
+                    discordId: userId,
+                    accountId: generateAccountId(),
+                    username: username,
+                    username_lower: username.toLowerCase(),
+                    email: email,
+                    password: hashedPassword
+                });
+    
+                await newUser.save();
+                console.log("Failed To Save UserV2 Model!");
+>>>>>>> Stashed changes
             }
         } catch (error) {
             console.error('Error checking existing user:', error);
