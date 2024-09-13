@@ -127,7 +127,6 @@ app.post("/fortnite/api/game/v2/profile/:backend/client/QueryProfile", (req, res
         return res.status(200).json(profileData);
     }
 
-    // Return default response for other profiles
     return res.status(404).json({ error: "Profile not found" });
 });
 
