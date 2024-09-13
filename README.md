@@ -32,12 +32,17 @@ node index.js
 ## What's Next?
 
 - MCP
+- XMPP
+- Matchmaking/Matchmaker
+- Friends
+- Shop
 
 ## Planned Features
 
 - [x] Login
 - [x] Easy setup
 - [x] Database (MongoDB)
+- [x] WEBSERVICE API
 - [ ] Auto shop
 - [ ] Battle Pass
 - [ ] Challenges

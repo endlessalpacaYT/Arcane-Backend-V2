@@ -1,15 +1,19 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 3551;
 
+const startTime = new Date();
+
 const functions = require("./src/utils/functions.js");
 const err = require("./src/utils/error.js");
 const shop = require("./src/Shop/shop.js");
 const friends = require("./src/routes/friends.js");
+const chartRoutes = require('./src/routes/chart.js');
 const authRoutes = require('./src/routes/auth');
 const cloudstorage = require('./src/routes/cloudstorage.js');
 const mcp = require("./src/routes/mcp.js");
@@ -27,6 +31,23 @@ app.use(authRoutes);
 app.use(cloudstorage);
 app.use(mcp);
 app.use(friends);
+app.use(chartRoutes);
+
+app.get('/api/runtime', (req, res) => {
+    const now = new Date();
+    const uptimeMs = now - startTime;
+    const uptimeSeconds = Math.floor(uptimeMs / 1000);
+    const uptimeMinutes = Math.floor(uptimeSeconds / 60);
+    const uptimeHours = Math.floor(uptimeMinutes / 60);
+
+    res.json({
+        uptime: {
+            hours: uptimeHours,
+            minutes: uptimeMinutes % 60,
+            seconds: uptimeSeconds % 60
+        }
+    });
+});
 
 app.use((req, res, next) => {
     res.on('finish', () => {
@@ -37,12 +58,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use((req, res) => {
-    res.status(404).json({
-        error: "errors.common.arcane.notfound",
-        status: 404
-    });
-});
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
@@ -53,8 +68,17 @@ app.use((err, req, res, next) => {
     });
 });
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'www', 'html', 'index.html'));
+});
+
+app.get('/data', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'www', 'html', 'data.html'));
+});
+
+
 async function initDB() {
-    const mongoDB = process.env.MONGODB || "mongodb://127.0.0.1:27017/Arcane";
+    const mongoDB = process.env.MONGODB || "mongodb://127.0.0.1/ArcaneV2";
     try {
         await mongoose.connect(mongoDB);
         console.log("MongoDB connected successfully!");
