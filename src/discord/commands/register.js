@@ -38,8 +38,17 @@ module.exports = {
 
         try {
             const existingUser = await User.findOne({ discordId: userId });
+            const existingUserV2 = await UserV2.findOne({ discordId: userId });
 
             if (existingUser) {
+                const embed = new EmbedBuilder()
+                    .setColor("#ff0000")
+                    .setTitle("Failed To Create An Account!")
+                    .setDescription("Reason: You already created an account!");
+
+                await interaction.reply({ embeds: [embed], ephemeral: true });
+                return;
+            } else if (existingUserV2) {
                 const embed = new EmbedBuilder()
                     .setColor("#ff0000")
                     .setTitle("Failed To Create An Account!")
@@ -50,38 +59,15 @@ module.exports = {
             }
 
             try {
-<<<<<<< Updated upstream
-                const newUser = new UserV2({
-                    Create: new Date(),
-                    Banned: false,
-                    DiscordId: userId,
-                    AccountId: generateAccountId(),
-=======
                 const newUserV2 = new UserV2({
-                    Create: Date.now(),
+                    Create: new Date(),
                     Banned: false,
                     Discord: userId,
                     Account: generateAccountId(),
->>>>>>> Stashed changes
                     Username: username,
-                    Username_lower: username.toLowerCase(),
+                    Username_Lower: username.toLowerCase(),
                     Email: email,
                     Password: hashedPassword
-<<<<<<< Updated upstream
-                });
-    
-                await newUser.save();
-
-                const embed = new EmbedBuilder()
-                    .setColor("#a600ff")
-                    .setTitle("Successfully Registered")
-                    .setDescription("Registered With The Username: " + username);
-
-                await interaction.reply({ embeds: [embed], ephemeral: true });
-            } catch (error) {
-                console.error('Error saving user:', error);
-                await interaction.reply({ content: 'There was an error saving your account. Please try again later.', ephemeral: true });
-=======
                 });
     
                 await newUserV2.save();
@@ -98,11 +84,16 @@ module.exports = {
                 });
     
                 await newUser.save();
-                console.log("Failed To Save UserV2 Model!");
->>>>>>> Stashed changes
             }
+
+            const embed = new EmbedBuilder()
+                .setColor("#a600ff")
+                .setTitle("Successfully Registered")
+                .setDescription("Registered With The Username: " + username);
+
+            await interaction.reply({ embeds: [embed], ephemeral: true });
         } catch (error) {
-            console.error('Error checking existing user:', error);
+            console.error('Error registering user:', error);
             await interaction.reply({ content: 'There was an error registering your account. Please try again later.', ephemeral: true });
         }
     }
