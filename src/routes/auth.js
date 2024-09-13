@@ -155,11 +155,25 @@ express.post("/account/api/oauth/token", async (req, res) => {
     const { grant_type, username, password } = req.body;
 
     const user = await User.findOne({ email: username });
+    if (!user) {
+        return res.status(401).json({
+            "error": "arcane.errors.invalid.email"
+        });
+    }
     try {
         Memory_CurrentAccountID = user.username;
     }catch {
-        console.log(req.body);
         Memory_CurrentAccountID = "ArcaneV2";
+        return res.status(401).json({
+            "error": "arcane.errors.username.not_found"
+        });
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+        return res.status(401).json({
+            "error": "arcane.errors.invalid.password"
+        });
     }
     
 
