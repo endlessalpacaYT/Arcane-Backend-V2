@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const rateLimit = require('express-rate-limit');
 require("dotenv").config();
 
 const app = express();
@@ -12,6 +13,13 @@ const friends = require("./src/routes/friends.js");
 const authRoutes = require('./src/routes/auth');
 const cloudstorage = require('./src/routes/cloudstorage.js');
 const mcp = require("./src/routes/mcp.js");
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 100, 
+  message: 'Too many requests from this IP, please try again later.',
+});
+app.use(limiter);
 
 app.use(express.json());
 
@@ -45,7 +53,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Initialize MongoDB connection
 async function initDB() {
     const mongoDB = process.env.MONGODB || "mongodb://127.0.0.1:27017/Arcane";
     try {
@@ -74,5 +81,19 @@ function startBackend() {
     console.log("Arcane Starting...");
     startMain();
 }
+
+function handleShutdown(signal) {
+    console.log(`Received ${signal}. Closing server...`);
+    app.close(() => {
+        console.log('Server closed.');
+        mongoose.disconnect(() => {
+            console.log('MongoDB disconnected.');
+            process.exit(0);
+        });
+    });
+}
+
+process.on('SIGINT', () => handleShutdown('SIGINT'));
+process.on('SIGTERM', () => handleShutdown('SIGTERM'));
 
 startBackend();
