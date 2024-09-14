@@ -11,4 +11,8 @@ app.get('/party/api/v1/Fortnite/user/:accountId', (req, res) => {
     })
 })
 
+app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/join', (req, res) => {
+    res.status(200).send({ message: 'OK' });
+})
+
 module.exports = app;
