@@ -308,9 +308,38 @@ app.get('/party/api/v1/Fortnite/parties/:partyId', async (req, res) => {
     }
 })
 
-app.patch('/party/api/v1/Fortnite/parties/:partyId/privacy', (req, res) => {
-    res.status(200).send({ message: 'OK' });
-})
+app.patch('/party/api/v1/Fortnite/parties/:partyId/privacy', async (req, res) => {
+    try {
+        const { partyId } = req.params;
+        const { privacySettings } = req.body;  
+
+        const party = await Party.findOne({ partyId: partyId });
+        if (!party) {
+            return res.status(404).json({
+                error: "arcane.errors.party.not_found"
+            });
+        }
+
+        party.privacySettings = privacySettings;
+
+        await party.save();
+
+        res.status(200).json({
+            message: "Privacy settings updated successfully",
+            partyId: party.partyId,
+            privacySettings: party.privacySettings
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            error: "errors.arcane.server_error",
+            error_details: "The server had a problem executing /party/api/v1/Fortnite/parties/:partyId/privacy",
+            status: 500
+        });
+        console.log("Error: /party/api/v1/Fortnite/parties/:partyId/privacy : " + err);
+    }
+});
+
 
 app.post('/party/api/v1/Fortnite/parties/:partyId/invitations', (req, res) => {
     res.status(200).send({ message: 'OK' });
