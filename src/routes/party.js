@@ -3,7 +3,12 @@ const express = require("express");
 const app = express();
 
 app.get('/party/api/v1/Fortnite/user/:accountId', (req, res) => {
-    res.status(200).send({ message: 'OK' });
+    const { accountId } = req.params;
+    res.json({
+        partyId: accountId,
+        partyMembers: [],
+        leaderId: accountId
+    })
 })
 
 module.exports = app;

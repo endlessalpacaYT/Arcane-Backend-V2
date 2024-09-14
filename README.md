@@ -72,3 +72,7 @@ node index.js
 - [x] Register command
 - [x] Pinged command
 - [ ] User lookup command
+
+## Credits:
+- CoreGamer32 For The Web API And HTML.
+- Tgnick For Nothing, Just Cool!
