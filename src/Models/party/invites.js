@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const inviteschema = new mongoose.schema({
+const inviteschema = new mongoose.Schema({
     partyId: { type: String, required: true },
     accountId: { type: String, required: true }, 
     invitationTime: { type: Date, required: true, default: Date.now },
@@ -9,7 +9,7 @@ const inviteschema = new mongoose.schema({
     collection: "invitations"
 });
 
-InviteSchema.index({ expirationTime: 1 }, { expireAfterSeconds: 0 });
+inviteschema.index({ expirationTime: 1 }, { expireAfterSeconds: 0 });
 
 const invite = mongoose.model('invite', inviteschema);
 
