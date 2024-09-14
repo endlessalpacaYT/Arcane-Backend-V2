@@ -230,9 +230,10 @@ app.post('/party/api/v1/Fortnite/parties/:partyId/invitations/:accountId', async
     }
 })
 
+// Used chatgpt for like 25% of this one but idc
 app.delete('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', async (req, res) => {
     try {
-        const { partyId, accountId } = req.params;
+        let { partyId, accountId } = req.params;
 
         if (partyId.startsWith("Creating_")) {
             partyId = partyId.replace("Creating_", "");
@@ -274,7 +275,7 @@ app.delete('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', async (
         });
         console.log(`Member ${accountId} has been removed from the party.`);
 
-    }catch (err) {
+    } catch (err) {
         res.status(500).json({
             error: "errors.arcane.server_error",
             error_details: "The server had a problem executing /party/api/v1/Fortnite/parties/:partyId/members/:accountId",
