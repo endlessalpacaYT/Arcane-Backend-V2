@@ -3,6 +3,45 @@ const express = require("express");
 const app = express();
 
 const Profile = require("../Models/profile");
+const User = require("../Models/user/user");
+const UserV2 = require("../Models/user/userv2");
+const Friends = require("../Models/friends/friends");
+const Party = require("../Models/party/party");
+const Invites = require("../Models/party/invites")
+const Notification = require("../Models/party/notification")
+
+app.get('/account/api/public/account/displayName/:displayName', async (req, res) => {
+    try {
+        const { displayName } = req.params;
+
+        let userV2 = await UserV2.findOne({ Username: displayName });
+        let user; 
+        
+        if (!userV2) {
+            user = await User.findOne({ username: displayName });
+            if (!user) {
+                return res.status(404).json({
+                    error: "arcane.errors.displayname.not_found",
+                });
+            }
+        }
+
+        const responseUser = userV2 ? userV2 : user;
+
+        res.status(200).json({
+            id: responseUser.Account || responseUser.accountId,  
+            displayName: responseUser.Username || responseUser.username,  
+            externalAuths: {}  
+        });
+
+    } catch (err) {
+        console.error('Error fetching user by displayName:', err);
+        res.status(500).json({
+            error: "arcane.errors.server_error",
+            message: "The server encountered an error while processing the request"
+        });
+    }
+});
 
 app.post('/fortnite/api/game/v2/profile/:accountId/client/QueryProfile', async (req, res) => {
     const { accountId } = req.params;

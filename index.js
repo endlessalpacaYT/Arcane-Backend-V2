@@ -44,7 +44,6 @@ app.use(profile);
 app.use(party);
 app.use(cloudstorage);
 app.use(mcp);
-app.use(APIWEB);
 app.use(friends);
 
 app.get('/api/runtime', (req, res) => {
@@ -61,14 +60,6 @@ app.get('/api/runtime', (req, res) => {
             seconds: uptimeSeconds % 60
         }
     });
-});
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'www', 'html', 'index.html'));
-});
-
-app.get('/data', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'www', 'html', 'data.html'));
 });
 
 app.use((err, req, res, next) => {
