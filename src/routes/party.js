@@ -5,7 +5,8 @@ const app = express();
 
 const User = require("../Models/user/user");
 const UserV2 = require("../Models/user/userv2");
-const Party = require("../Models/party");
+const Party = require("../Models/party/party");
+const Invites = require("../Models/party/invites")
 
 app.get('/party/api/v1/Fortnite/user/:accountId', async (req, res) => {
     try {
@@ -167,8 +168,57 @@ app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/leave', asy
     }
 });
 
-app.post('/party/api/v1/Fortnite/parties/:partyId/invitations/:accountId', (req, res) => {
+app.post('/party/api/v1/Fortnite/parties/:partyId/invitations/:accountId', async (req, res) => {
     try {
+        const { partyId, accountId } = req.params;
+
+        const targetParty = await Party.findOne({ partyId: partyId });
+        if (!targetParty) {
+            return res.status(404).json({
+                error: "arcane.errors.party.not_found"
+            });
+        }
+
+        if (targetParty.isJoinable == false) {
+            return res.status(403).json({
+                error: "arcane.errors.party.not_joinable"
+            })
+        }
+
+        const isInParty = targetParty.members.find(member => member.memberId === accountId)
+        if (isInParty == true) {
+            return res.json({
+                error: "arcane.errors.player.already_in_party"
+            })
+        }
+
+        const invitationTime = Date.now();
+        const expirationTime = Date.now() + 60000;
+
+        const invite = new Invites({
+            partyId: partyId,
+            accountId: accountId,
+            invitationTime: invitationTime,
+            expirationTime: expirationTime
+        })
+
+        try {
+            await invite.save();
+        }catch (err) {
+            console.log("document failed to save: " + err);
+            return res.json({
+                error: "arcane.errors.database_document.failed_to_save"
+            })
+        }
+
+        res.status(200).json({
+                "status": "success",
+                "message": "Invitation sent successfully.",
+                "partyId": partyId,
+                "accountId": accountId,
+                "invitatationTime": invitationTime,
+                "expirationTime": expirationTime
+        })
         
     }catch (err) {
         res.status(500).json({
