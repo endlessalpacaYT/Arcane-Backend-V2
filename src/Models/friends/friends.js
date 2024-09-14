@@ -2,20 +2,23 @@ const mongoose = require("mongoose");
 
 const FriendsSchema = new mongoose.Schema(
     {
-        accountId: { type: String, required: true, unique: true }, 
+        accountId: { type: String, required: true, unique: true },
         friends: [
             {
                 friendId: { type: String, required: true },
                 status: { type: String, enum: ['active', 'pending', 'blocked'], default: 'pending' },
-                initiatedBy: { type: String, required: true }, 
                 addedAt: { type: Date, default: Date.now },
                 lastInteraction: { type: Date, default: Date.now }
             }
+        ],
+        blocklist: [
+            {
+                blockId: { type: String, required: true },
+                blockedAt: { type: Date, default: Date.now }
+            }
         ]
     },
-    {
-        collection: "friends"
-    }
+    { collection: "friends" }
 );
 
 const Friends = mongoose.model('Friends', FriendsSchema);
