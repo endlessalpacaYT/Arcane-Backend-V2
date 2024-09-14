@@ -234,6 +234,10 @@ app.delete('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', async (
     try {
         const { partyId, accountId } = req.params;
 
+        if (partyId.startsWith("Creating_")) {
+            partyId = partyId.replace("Creating_", "");
+        }
+
         const currentParty = await Party.findOne({ partyId: partyId });
         if (!currentParty) {
             return res.status(404).json({
@@ -323,6 +327,7 @@ app.patch('/party/api/v1/Fortnite/parties/:partyId/privacy', async (req, res) =>
         party.privacySettings = privacySettings;
 
         await party.save();
+        console.log("privacy settings updated: " + party.privacySettings)
 
         res.status(200).json({
             message: "Privacy settings updated successfully",
@@ -340,10 +345,59 @@ app.patch('/party/api/v1/Fortnite/parties/:partyId/privacy', async (req, res) =>
     }
 });
 
+app.post('/party/api/v1/Fortnite/parties/:partyId/invitations', async (req, res) => {
+    try {
+        const { partyId } = req.params;
+        const { recipientAccountId } = req.body;
 
-app.post('/party/api/v1/Fortnite/parties/:partyId/invitations', (req, res) => {
-    res.status(200).send({ message: 'OK' });
-})
+        const party = await Party.findOne({ partyId: partyId });
+        if (!party) {
+            return res.status(404).json({
+                error: "arcane.errors.party.not_found"
+            });
+        }
+
+        if (!party.isJoinable) {
+            return res.status(403).json({
+                error: "arcane.errors.party.not_joinable"
+            });
+        }
+
+        const isInParty = party.members.some(member => member.memberId === recipientAccountId);
+        if (isInParty) {
+            return res.status(400).json({
+                error: "arcane.errors.player.already_in_party"
+            });
+        }
+
+        const invitation = new Invites({
+            partyId: partyId,
+            accountId: recipientAccountId,
+            invitationTime: Date.now(),
+            expirationTime: Date.now() + 60000,  
+        });
+
+        try {
+            await invitation.save();
+        }catch (err) {
+            console.log("Error saving invitation: " + err);
+        }
+
+        res.status(200).json({
+            message: 'Invitation sent successfully',
+            invitationId: invitation._id,
+            expiresAt: invitation.expirationTime
+        });
+        console.log(`Invitation sent to ${recipientAccountId} for party ${partyId}.`);
+    } catch (err) {
+        res.status(500).json({
+            error: "errors.arcane.server_error",
+            error_details: "The server had a problem executing /party/api/v1/Fortnite/parties/:partyId/invitations",
+            status: 500
+        });
+        console.error("Error: /party/api/v1/Fortnite/parties/:partyId/invitations : " + err);
+    }
+});
 
 app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/accept', (req, res) => {
     res.status(200).send({ message: 'OK' });
