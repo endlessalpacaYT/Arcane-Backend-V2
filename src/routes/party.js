@@ -15,4 +15,40 @@ app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/join', (req
     res.status(200).send({ message: 'OK' });
 })
 
+app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/leave', (req, res) => {
+    res.status(200).send({ message: 'OK' });
+})
+
+app.post('/party/api/v1/Fortnite/parties/:partyId/invitations/:accountId', (req, res) => {
+    res.status(200).send({ message: 'OK' });
+})
+
+app.delete('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', (req, res) => {
+    res.status(200).send({ message: 'OK' });
+})
+
+app.get('/party/api/v1/Fortnite/parties/:partyId', (req, res) => {
+    res.status(200).send({ message: 'OK' });
+})
+
+app.patch('/party/api/v1/Fortnite/parties/:partyId/privacy', (req, res) => {
+    res.status(200).send({ message: 'OK' });
+})
+
+app.post('/party/api/v1/Fortnite/parties/:partyId/invitations', (req, res) => {
+    res.status(200).send({ message: 'OK' });
+})
+
+app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/accept', (req, res) => {
+    res.status(200).send({ message: 'OK' });
+})
+
+app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/decline', (req, res) => {
+    res.status(200).send({ message: 'OK' });
+})
+
+app.get('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', (req, res) => {
+    res.status(200).send({ message: 'OK' });
+})
+
 module.exports = app;
