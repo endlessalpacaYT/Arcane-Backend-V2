@@ -7,6 +7,7 @@ const User = require("../Models/user/user");
 const UserV2 = require("../Models/user/userv2");
 const Party = require("../Models/party/party");
 const Invites = require("../Models/party/invites")
+const Notification = require("../Models/party/notification")
 
 app.get('/party/api/v1/Fortnite/user/:accountId', async (req, res) => {
     try {
@@ -235,15 +236,27 @@ app.delete('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', async (
     try {
         let { partyId, accountId } = req.params;
 
+        let cutPartyId = partyId;
+
         if (partyId.startsWith("Creating_")) {
-            partyId = partyId.replace("Creating_", "");
+            cutPartyId = partyId.replace("Creating_", "");
         }
 
-        const currentParty = await Party.findOne({ partyId: partyId });
+        let currentParty = await Party.findOne({ partyId: cutPartyId });
+        
         if (!currentParty) {
-            return res.status(404).json({
-                error: "arcane.errors.party.not_found"
+            currentParty = await Party.findOne({
+                $or: [
+                    { leaderId: accountId },
+                    { 'members.memberId': accountId }
+                ]
             });
+
+            if (!currentParty) {
+                return res.status(404).json({
+                    error: "arcane.errors.party.not_found"
+                });
+            }
         }
 
         const memberIndex = currentParty.members.findIndex(member => member.memberId === accountId);
@@ -261,7 +274,7 @@ app.delete('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', async (
             } else {
                 await currentParty.deleteOne();
                 return res.status(200).json({
-                    message: `Party ${partyId} has been disbanded.`,
+                    message: `Party ${cutPartyId} has been disbanded.`,
                     status: 200
                 });
             }
@@ -271,7 +284,7 @@ app.delete('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', async (
 
         res.status(200).json({
             message: `Member ${accountId} has been removed from the party.`,
-            partyId: partyId
+            partyId: currentParty.partyId
         });
         console.log(`Member ${accountId} has been removed from the party.`);
 
@@ -400,16 +413,137 @@ app.post('/party/api/v1/Fortnite/parties/:partyId/invitations', async (req, res)
     }
 });
 
-app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/accept', (req, res) => {
-    res.status(200).send({ message: 'OK' });
-})
+// Used ChatGPT For This Route
+app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/accept', async (req, res) => {
+    try {
+        const { partyId, accountId } = req.params;
 
-app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/decline', (req, res) => {
-    res.status(200).send({ message: 'OK' });
-})
+        const invite = await Invites.findOne({ partyId: partyId, accountId: accountId });
+        if (!invite) {
+            return res.status(404).json({
+                error: "arcane.errors.invite.not_found"
+            });
+        }
 
-app.get('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', (req, res) => {
-    res.status(200).send({ message: 'OK' });
-})
+        const party = await Party.findOne({ partyId: partyId });
+        if (!party) {
+            return res.status(404).json({
+                error: "arcane.errors.party.not_found"
+            });
+        }
+
+        const isAlreadyInParty = party.members.some(member => member.memberId === accountId);
+        if (isAlreadyInParty) {
+            return res.status(400).json({
+                error: "arcane.errors.player.already_in_party"
+            });
+        }
+
+        party.members.push({
+            memberId: accountId,
+            readyState: "NOT_READY",
+            isLeader: false,
+            platform: "Windows",
+            joinTime: Date.now()
+        });
+
+        await party.save();
+        await invite.deleteOne(); 
+
+        res.status(200).json({
+            message: `Member ${accountId} has accepted the invitation to join party ${partyId}.`
+        });
+    } catch (err) {
+        res.status(500).json({
+            error: "errors.arcane.server_error",
+            error_details: `There was a problem accepting the invitation for party ${partyId}`,
+            status: 500
+        });
+        console.error(`Error accepting invitation for party ${partyId}: ${err}`);
+    }
+});
+
+// Used ChatGPT For This Route
+app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/decline', async (req, res) => {
+    try {
+        const { partyId, accountId } = req.params;
+
+        const invite = await Invites.findOne({ partyId: partyId, accountId: accountId });
+        if (!invite) {
+            return res.status(404).json({
+                error: "arcane.errors.invite.not_found"
+            });
+        }
+
+        await invite.deleteOne();
+
+        res.status(200).json({
+            message: `Member ${accountId} has declined the invitation to join party ${partyId}.`
+        });
+    } catch (err) {
+        res.status(500).json({
+            error: "errors.arcane.server_error",
+            error_details: `There was a problem declining the invitation for party ${partyId}`,
+            status: 500
+        });
+        console.error(`Error declining invitation for party ${partyId}: ${err}`);
+    }
+});
+
+app.get('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', async (req, res) => {
+    try {
+        const { partyId, accountId } = req.params;
+
+        const currentParty = await Party.findOne({ partyId: partyId });
+        if (!currentParty) {
+            return res.status(404).json({
+                error: "arcane.errors.party.not_found"
+            });
+        }
+
+        const member = currentParty.members.find(member => member.memberId === accountId);
+        if (!member) {
+            return res.status(404).json({
+                error: "arcane.errors.player.not_in_party"
+            });
+        }
+
+        res.status(200).json({
+            memberId: member.memberId,
+            readyState: member.readyState,
+            isLeader: member.isLeader,
+            platform: member.platform,
+            joinTime: member.joinTime,
+        });
+    } catch (err) {
+        res.status(500).json({
+            error: "errors.arcane.server_error",
+            error_details: "The server had a problem executing /party/api/v1/Fortnite/parties/:partyId/members/:accountId",
+            status: 500
+        });
+        console.log("Error: /party/api/v1/Fortnite/parties/:partyId/members/:accountId : " + err);
+    }
+});
+
+app.get('/party/api/v1/Fortnite/user/:accountId/notifications/undelivered/count', async (req, res) => {
+    try {
+        const { accountId } = req.params;
+        
+        const undeliveredNotifications = await Notification.find({ accountId: accountId, delivered: false });
+
+        res.status(200).json({
+            undeliveredCount: undeliveredNotifications.length,
+            notifications: undeliveredNotifications 
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            error: "errors.arcane.server_error",
+            error_details: "The server encountered a problem processing the request",
+            status: 500
+        });
+        console.log("Error: /party/api/v1/Fortnite/user/:accountId/notifications/undelivered/count : " + err);
+    }
+});
 
 module.exports = app;
