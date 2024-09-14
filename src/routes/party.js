@@ -114,7 +114,7 @@ app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/join', asyn
             error_details: "The server had a problem executing /party/api/v1/Fortnite/parties/:partyId/members/:accountId/join",
             status: 500
         })
-        console.log("error: /party/api/v1/Fortnite/user/:accountId : " + err)
+        console.log("error: /party/api/v1/Fortnite/parties/:partyId/members/:accountId/join : " + err)
     }
 })
 
@@ -157,7 +157,7 @@ app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/leave', asy
         });
         console.log(`Member ${accountId} has left the party.`);
 
-    } catch (err) {
+    }catch (err) {
         res.status(500).json({
             error: "errors.arcane.server_error",
             error_details: "The server had a problem executing /party/api/v1/Fortnite/parties/:partyId/members/:accountId/leave",
@@ -168,7 +168,16 @@ app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/leave', asy
 });
 
 app.post('/party/api/v1/Fortnite/parties/:partyId/invitations/:accountId', (req, res) => {
-    res.status(200).send({ message: 'OK' });
+    try {
+        
+    }catch (err) {
+        res.status(500).json({
+            error: "errors.arcane.server_error",
+            error_details: "The server had a problem executing /party/api/v1/Fortnite/parties/:partyId/invitations/:accountId",
+            status: 500
+        });
+        console.log("error: /party/api/v1/Fortnite/parties/:partyId/invitations/:accountId : " + err);
+    }
 })
 
 app.delete('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', (req, res) => {
