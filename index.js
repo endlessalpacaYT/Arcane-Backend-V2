@@ -12,7 +12,6 @@ const startTime = new Date();
 const functions = require("./src/utils/functions.js");
 const APIWEB = require("./src/APIWEB/index.js");
 const err = require("./src/utils/error.js");
-const shop = require("./src/Shop/shop.js");
 const friends = require("./src/routes/friends.js");
 const authRoutes = require('./src/routes/auth');
 const cloudstorage = require('./src/routes/cloudstorage.js');
@@ -20,7 +19,6 @@ const lightswitch = require('./src/routes/lightswitch.js');
 const profile = require("./src/routes/profile.js");
 const party = require("./src/routes/party.js");
 const mcp = require("./src/routes/mcp.js");
-const { Shop } = require("./src/Shop/interfaces/Dedarations.js");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 

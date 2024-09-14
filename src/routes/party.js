@@ -2,13 +2,36 @@ const express = require("express");
 
 const app = express();
 
-app.get('/party/api/v1/Fortnite/user/:accountId', (req, res) => {
-    const { accountId } = req.params;
-    res.json({
-        partyId: accountId,
-        partyMembers: [],
-        leaderId: accountId
-    })
+const User = require("../Models/user");
+const UserV2 = require("../Models/userv2");
+
+app.get('/party/api/v1/Fortnite/user/:accountId', async (req, res) => {
+    try {
+        const { accountId } = req.params;
+
+        var userV2 = await UserV2.findOne({ Account: accountId });
+        if (!userV2) {
+            user = await User.findOne({ accountId: accountId });
+            if (!user) {
+                return res.status(401).json({
+                    "error": "arcane.errors.invalid.accountid"
+                });
+            }
+        }
+
+        res.json({
+            partyId: accountId,
+            partyMembers: [],
+            leaderId: accountId
+        })
+    }catch (err) {
+        res.status(500).json({
+            error: "errors.arcane.server_error",
+            error_details: "The server had a problem executing /party/api/v1/Fortnite/user/:accountId",
+            status: 500
+        })
+        console.log("error: /party/api/v1/Fortnite/user/:accountId : " + err)
+    }
 })
 
 app.post('/party/api/v1/Fortnite/parties/:partyId/members/:accountId/join', (req, res) => {

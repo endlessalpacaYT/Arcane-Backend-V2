@@ -9,7 +9,8 @@ const UserV2 = require("../Models/userv2.js");
 
 express.use(Express.urlencoded({ extended: true }));
 
-var Memory_CurrentAccountId = "ArcaneV2";
+var Memory_CurrentDisplayName = "ArcaneV2";
+var Memory_CurrentAccountID = "";
 
 express.get("/account/api/public/account", async (req, res) => {
     var response = [];
@@ -42,17 +43,13 @@ express.get("/account/api/public/account", async (req, res) => {
 })
 
 express.get("/account/api/public/account/:AccountId", async (req, res) => {
-    if (true) {
-        Memory_CurrentAccountId = req.params.AccountId;
-    }
-
-    if (Memory_CurrentAccountId.includes("@")) Memory_CurrentAccountId = Memory_CurrentAccountId.split("@")[0];
+    if (Memory_CurrentDisplayName.includes("@")) Memory_CurrentDisplayName = Memory_CurrentDisplayName.split("@")[0];
 
     res.json({
         "id": req.params.AccountId,
-        "displayName": Memory_CurrentAccountId,
+        "displayName": Memory_CurrentDisplayName,
         "name": "Arcane",
-        "email": Memory_CurrentAccountId + "@arcane.com",
+        "email": Memory_CurrentDisplayName + "@arcane.com",
         "failedLoginAttempts": 0,
         "lastLogin": new Date().toISOString(),
         "numberOfDisplayNameChanges": 0,
@@ -87,14 +84,14 @@ express.post("/auth/v1/oauth/token", async (req, res) => {
         "organization_id": "arcaneorganizationid",
         "product_id": "prod-fn",
         "sandbox_id": "fn",
-        "displayName": Memory_CurrentAccountId
+        "displayName": Memory_CurrentDisplayName
     })
 })
 
 express.get("/epic/id/v2/sdk/accounts", async (req, res) => {
     res.json([{
-        "AccountId": Memory_CurrentAccountId,
-        "displayName": Memory_CurrentAccountId,
+        "AccountId": Memory_CurrentAccountID,
+        "displayName": Memory_CurrentDisplayName,
         "preferredLanguage": "en",
         "cabinedMode": false,
         "empty": false
@@ -111,10 +108,10 @@ express.post("/epic/oauth/v2/token", async (req, res) => {
         "refresh_token": "arcanetoken",
         "refresh_expires_in": 86400,
         "refresh_expires_at": "9999-12-31T23:59:59.999Z",
-        "account_id": Memory_CurrentAccountId,
+        "account_id": Memory_CurrentAccountID,
         "client_id": "arcaneclientid",
         "application_id": "arcaneapplicationid",
-        "selected_account_id": Memory_CurrentAccountId,
+        "selected_account_id": Memory_CurrentAccountID,
         "id_token": "arcanetoken"
     })
 })
@@ -141,13 +138,13 @@ express.get("/account/api/oauth/verify", async (req, res) => {
         "client_id": "arcaneclientid",
         "internal_client": true,
         "client_service": "fortnite",
-        "account_id": Memory_CurrentAccountId,
+        "account_id": Memory_CurrentAccountID,
         "expires_in": 28800,
         "expires_at": "9999-12-02T01:12:01.100Z",
         "auth_method": "exchange_code",
-        "display_name": Memory_CurrentAccountId,
+        "display_name": Memory_CurrentDisplayName,
         "app": "fortnite",
-        "in_app_id": Memory_CurrentAccountId,
+        "in_app_id": Memory_CurrentAccountID,
         "device_id": "arcanedeviceid"
     })
 })
@@ -166,14 +163,27 @@ express.post("/account/api/oauth/token", async (req, res) => {
     }
     try {
         if (userV2) {
-            Memory_CurrentAccountId = userV2.Username;
+            Memory_CurrentDisplayName = userV2.Username;
         }else {
-            Memory_CurrentAccountId = user.username;
+            Memory_CurrentDisplayName = user.username;
         }
     }catch {
-        Memory_CurrentAccountId = "ArcaneV2";
+        Memory_CurrentDisplayName = "ArcaneV2";
         return res.status(401).json({
             "error": "arcane.errors.username.not_found"
+        });
+    }
+
+    try {
+        if (userV2) {
+            Memory_CurrentAccountID = userV2.Account;
+        }else {
+            Memory_CurrentAccountID = user.accountId;
+        }
+    }catch {
+        Memory_CurrentDisplayName = "ArcaneV2";
+        return res.status(401).json({
+            "error": "arcane.errors.accountId.not_found"
         });
     }
 
@@ -207,7 +217,7 @@ express.post("/account/api/oauth/token", async (req, res) => {
         }
     }
 
-    if (Memory_CurrentAccountId.includes("@")) Memory_CurrentAccountId = Memory_CurrentAccountId.split("@")[0];
+    if (Memory_CurrentDisplayName.includes("@")) Memory_CurrentDisplayName = Memory_CurrentDisplayName.split("@")[0];
 
     res.json({
         "access_token": "arcanetoken",
@@ -217,13 +227,13 @@ express.post("/account/api/oauth/token", async (req, res) => {
         "refresh_token": "arcanetoken",
         "refresh_expires": 86400,
         "refresh_expires_at": "9999-12-02T01:12:01.100Z",
-        "account_id": Memory_CurrentAccountId,
+        "account_id": Memory_CurrentAccountID,
         "client_id": "arcaneclientid",
         "internal_client": true,
         "client_service": "fortnite",
-        "displayName": Memory_CurrentAccountId,
+        "displayName": Memory_CurrentDisplayName,
         "app": "fortnite",
-        "in_app_id": Memory_CurrentAccountId,
+        "in_app_id": Memory_CurrentAccountID,
         "device_id": "arcanedeviceid"
     })
 })
