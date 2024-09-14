@@ -270,7 +270,7 @@ app.delete('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', async (
         });
         console.log(`Member ${accountId} has been removed from the party.`);
 
-    } catch (err) {
+    }catch (err) {
         res.status(500).json({
             error: "errors.arcane.server_error",
             error_details: "The server had a problem executing /party/api/v1/Fortnite/parties/:partyId/members/:accountId",
@@ -280,8 +280,32 @@ app.delete('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', async (
     }
 });
 
-app.get('/party/api/v1/Fortnite/parties/:partyId', (req, res) => {
-    res.status(200).send({ message: 'OK' });
+app.get('/party/api/v1/Fortnite/parties/:partyId', async (req, res) => {
+    try {
+        const { partyId } = req.params;
+
+        const party = await Party.findOne({ partyId: partyId });
+        if (!party) {
+            return res.status(404).json({
+                error: "arcane.errors.party.not_found"
+            })
+        }
+
+        res.status(200).json({
+            partyId: party.partyId,
+            leaderId: party.leaderId,
+            partyMembers: party.members,
+            isJoinable: party.isJoinable,
+            privacySettings: party.privacySettings
+        })
+    }catch (err) {
+        res.status(500).json({
+            error: "errors.arcane.server_error",
+            error_details: "The server had a problem executing /party/api/v1/Fortnite/parties/:partyId",
+            status: 500
+        });
+        console.log("Error: /party/api/v1/Fortnite/parties/:partyId : " + err);
+    }
 })
 
 app.patch('/party/api/v1/Fortnite/parties/:partyId/privacy', (req, res) => {
