@@ -9,13 +9,13 @@ app.post('/fortnite/api/game/v2/profile/:accountId/client/QueryProfile', async (
     const { profileId, rvn } = req.query;
 
     try {
-        let profile = await Profile.findOne({ accountId, profileId });
+        let profile = await Profile.findOne({ accountId: profileId });
 
         try {
             if (!profile) {
                 profile = new Profile({
-                    accountId,
-                    profileId,
+                    accountId: accountId,
+                    profileId: profileId,
                     profileRevision: parseInt(rvn) + 1
                 });
                 await profile.save();

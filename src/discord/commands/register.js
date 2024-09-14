@@ -73,7 +73,7 @@ module.exports = {
                 });
     
                 await newUserV2.save();
-            }catch {
+            }catch (err) {
                 const newUser = new User({
                     created: new Date(),
                     banned: false,
@@ -86,6 +86,7 @@ module.exports = {
                 });
     
                 await newUser.save();
+                console.log("Reverted Creating User To V1: " + err);
             }
 
             const embed = new EmbedBuilder()

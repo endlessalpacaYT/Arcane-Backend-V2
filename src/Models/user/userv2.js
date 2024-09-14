@@ -4,7 +4,7 @@ const UserSchema = new mongoose.Schema(
     {
         Create: { type: Date, required: true, default: Date.now },
         Banned: { type: Boolean, default: false },
-        BannedReason: { type: String, required: true, unique: true },
+        BannedReason: { type: String, required: true },
         BannedExpire: { type: Date, default: Date.now },
         MatchmakerBanned: { type: Boolean, default: false },
         BannedMatchmakerExpire: { type: Date, default: Date.now },

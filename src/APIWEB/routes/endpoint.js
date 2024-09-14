@@ -25,4 +25,23 @@ router.get('/apiKeys', (req, res) => {
     res.json(apiKeys);
 });
 
+router.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+        code: 'errors.com.arcanev2.internal.server.error',
+        message: 'An unexpected error occurred.',
+        error: process.env.NODE_ENV === 'production' ? {} : err
+    });
+});
+
+router.use((req, res) => {
+    const errorResponse = {
+        code: 'errors.com.arcanev2.endpoint.not.found.error',
+        message: 'The requested endpoint was not found.',
+        url: req.originalUrl,
+        method: req.method
+    };
+    res.status(404).json(errorResponse);
+});
+
 module.exports = router; 
