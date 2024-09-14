@@ -2,8 +2,8 @@ const express = require("express");
 
 const app = express();
 
-const User = require("../Models/user");
-const UserV2 = require("../Models/userv2");
+const User = require("../Models/user/user");
+const UserV2 = require("../Models/user/userv2");
 
 app.get('/party/api/v1/Fortnite/user/:accountId', async (req, res) => {
     try {
@@ -24,6 +24,7 @@ app.get('/party/api/v1/Fortnite/user/:accountId', async (req, res) => {
             partyMembers: [],
             leaderId: accountId
         })
+        console.log("[INFO] Party Created For AccountId: " + accountId);
     }catch (err) {
         res.status(500).json({
             error: "errors.arcane.server_error",

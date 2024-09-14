@@ -4,8 +4,8 @@ const fs = require("fs");
 const path = require("path");
 const iniparser = require("ini");
 const bcrypt = require("bcrypt");
-const User = require("../Models/user.js");
-const UserV2 = require("../Models/userv2.js");
+const User = require("../Models/user/user.js");
+const UserV2 = require("../Models/user/userv2.js");
 
 express.use(Express.urlencoded({ extended: true }));
 
