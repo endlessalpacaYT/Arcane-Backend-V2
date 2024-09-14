@@ -16,6 +16,7 @@ const shop = require("./src/Shop/shop.js");
 const friends = require("./src/routes/friends.js");
 const authRoutes = require('./src/routes/auth');
 const cloudstorage = require('./src/routes/cloudstorage.js');
+const lightswitch = require('./src/routes/lightswitch.js');
 const profile = require("./src/routes/profile.js");
 const party = require("./src/routes/party.js");
 const mcp = require("./src/routes/mcp.js");
@@ -39,6 +40,7 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(lightswitch);
 app.use(authRoutes);
 app.use(profile);
 app.use(party);
