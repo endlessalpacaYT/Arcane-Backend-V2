@@ -20,6 +20,7 @@ const profile = require("./src/routes/profile.js");
 const party = require("./src/routes/party.js");
 const mcp = require("./src/routes/mcp.js");
 const timeline = require("./src/routes/timeline.js");
+const contentpages = require("./src/routes/contentpages.js");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
@@ -47,6 +48,7 @@ app.use(cloudstorage);
 app.use(mcp);
 app.use(timeline);
 app.use(friends);
+app.use(contentpages)
 
 app.get('/api/runtime', (req, res) => {
     const now = new Date();
