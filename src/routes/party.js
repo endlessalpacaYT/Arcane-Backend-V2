@@ -230,9 +230,55 @@ app.post('/party/api/v1/Fortnite/parties/:partyId/invitations/:accountId', async
     }
 })
 
-app.delete('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', (req, res) => {
-    res.status(200).send({ message: 'OK' });
-})
+app.delete('/party/api/v1/Fortnite/parties/:partyId/members/:accountId', async (req, res) => {
+    try {
+        const { partyId, accountId } = req.params;
+
+        const currentParty = await Party.findOne({ partyId: partyId });
+        if (!currentParty) {
+            return res.status(404).json({
+                error: "arcane.errors.party.not_found"
+            });
+        }
+
+        const memberIndex = currentParty.members.findIndex(member => member.memberId === accountId);
+        if (memberIndex === -1) {
+            return res.status(404).json({
+                error: "arcane.errors.player.not_in_party"
+            });
+        }
+
+        currentParty.members.splice(memberIndex, 1);
+
+        if (currentParty.leaderId === accountId) {
+            if (currentParty.members.length > 0) {
+                currentParty.leaderId = currentParty.members[0].memberId;
+            } else {
+                await currentParty.deleteOne();
+                return res.status(200).json({
+                    message: `Party ${partyId} has been disbanded.`,
+                    status: 200
+                });
+            }
+        }
+
+        await currentParty.save();
+
+        res.status(200).json({
+            message: `Member ${accountId} has been removed from the party.`,
+            partyId: partyId
+        });
+        console.log(`Member ${accountId} has been removed from the party.`);
+
+    } catch (err) {
+        res.status(500).json({
+            error: "errors.arcane.server_error",
+            error_details: "The server had a problem executing /party/api/v1/Fortnite/parties/:partyId/members/:accountId",
+            status: 500
+        });
+        console.log("Error: /party/api/v1/Fortnite/parties/:partyId/members/:accountId : " + err);
+    }
+});
 
 app.get('/party/api/v1/Fortnite/parties/:partyId', (req, res) => {
     res.status(200).send({ message: 'OK' });
