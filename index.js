@@ -19,6 +19,7 @@ const lightswitch = require('./src/routes/lightswitch.js');
 const profile = require("./src/routes/profile.js");
 const party = require("./src/routes/party.js");
 const mcp = require("./src/routes/mcp.js");
+const timeline = require("./src/routes/timeline.js");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
@@ -44,6 +45,7 @@ app.use(profile);
 app.use(party);
 app.use(cloudstorage);
 app.use(mcp);
+app.use(timeline);
 app.use(friends);
 
 app.get('/api/runtime', (req, res) => {
