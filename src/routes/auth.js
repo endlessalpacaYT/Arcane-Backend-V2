@@ -75,6 +75,7 @@ express.get("/sdk/v1/*", async (req, res) => {
 })
 
 express.post("/auth/v1/oauth/token", async (req, res) => {
+    console.log("Requested [/auth/v1/oauth/token] Route");
     res.json({
         "access_token": "arcanetoken",
         "token_type": "bearer",

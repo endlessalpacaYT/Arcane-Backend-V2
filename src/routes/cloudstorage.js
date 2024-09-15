@@ -16,38 +16,39 @@ express.use((req, res, next) => {
     else return next();
 })
 
-express.get("/fortnite/api/cloudstorage/system", async (req, res) => {
-    const memory = functions.GetVersionInfo(req);
-
-    if (memory.build >= 9.40 && memory.build <= 10.40) {
-        return res.status(404).end();
-    }
-
-    const dir = path.join(__dirname, "..", "CloudStorage")
-    var CloudFiles = [];
-
-    fs.readdirSync(dir).forEach(name => {
-        if (name.toLowerCase().endsWith(".ini")) {
-            const ParsedFile = fs.readFileSync(path.join(dir, name), 'utf-8');
-            const ParsedStats = fs.statSync(path.join(dir, name));
-
-            CloudFiles.push({
-                "uniqueFilename": name,
-                "filename": name,
-                "hash": crypto.createHash('sha1').update(ParsedFile).digest('hex'),
-                "hash256": crypto.createHash('sha256').update(ParsedFile).digest('hex'),
-                "length": ParsedFile.length,
-                "contentType": "application/octet-stream",
-                "uploaded": ParsedStats.mtime,
-                "storageType": "S3",
-                "storageIds": {},
-                "doNotCache": true
-            })
+express.get('/fortnite/api/cloudstorage/system', (req, res) => {
+    const response = [
+        {
+            "uniqueFilename": "DefaultGame.ini",
+            "filename": "DefaultGame.ini",
+            "hash": "DUMMY_HASH_FOR_DEFAULT_GAME",
+            "length": 12345,
+            "contentType": "application/octet-stream",
+            "uploaded": "2024-01-01T00:00:00.000Z",
+            "storageType": "S3"
+        },
+        {
+            "uniqueFilename": "DefaultEngine.ini",
+            "filename": "DefaultEngine.ini",
+            "hash": "DUMMY_HASH_FOR_DEFAULT_ENGINE",
+            "length": 12345,
+            "contentType": "application/octet-stream",
+            "uploaded": "2024-01-01T00:00:00.000Z",
+            "storageType": "S3"
+        },
+        {
+            "uniqueFilename": "DefaultInput.ini",
+            "filename": "DefaultInput.ini",
+            "hash": "DUMMY_HASH_FOR_DEFAULT_INPUT",
+            "length": 12345,
+            "contentType": "application/octet-stream",
+            "uploaded": "2024-01-01T00:00:00.000Z",
+            "storageType": "S3"
         }
-    });
+    ];
 
-    res.json(CloudFiles)
-})
+    res.json(response);
+});
 
 express.get("/fortnite/api/cloudstorage/system/:file", async (req, res) => {
     const file = path.join(__dirname, "..", "CloudStorage", req.params.file);
@@ -55,7 +56,11 @@ express.get("/fortnite/api/cloudstorage/system/:file", async (req, res) => {
     if (fs.existsSync(file)) {
         const ParsedFile = fs.readFileSync(file);
 
-        return res.status(200).send(ParsedFile).end();
+        try {
+            return res.status(200).send(ParsedFile).end();
+        }catch (err) {
+            console.log("An Error Occured When Sending Data Through CloudStorage: " + err);
+        }
     } else {
         res.status(200);
         res.end();
@@ -64,36 +69,45 @@ express.get("/fortnite/api/cloudstorage/system/:file", async (req, res) => {
 
 express.get("/fortnite/api/cloudstorage/user/*/:file", async (req, res) => {
     try {
-        if (!fs.existsSync(path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings"))) {
-            fs.mkdirSync(path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings"));
+        const clientSettingsDir = path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings");
+        if (!fs.existsSync(clientSettingsDir)) {
+            fs.mkdirSync(clientSettingsDir, { recursive: true });  
         }
-    } catch (err) {}
+    } catch (err) {
+        console.error("Error creating directory:", err);
+    }
 
-    res.set("Content-Type", "application/octet-stream")
+    res.set("Content-Type", "application/octet-stream");
 
-    if (req.params.file.toLowerCase() != "clientsettings.sav") {
+    if (req.params.file.toLowerCase() !== "clientsettings.sav") {
         return res.status(404).json({
-            "error": "file not found"
+            "error": "File not found"
         });
     }
 
     const memory = functions.GetVersionInfo(req);
+    const currentBuildID = memory.CL;
 
-    var currentBuildID = memory.CL;
-
-    let file;
-    if (process.env.LOCALAPPDATA) file = path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
-    else file = path.join(__dirname, "..", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
-
-    if (fs.existsSync(file)) {
-        const ParsedFile = fs.readFileSync(file);
-
-        return res.status(200).send(ParsedFile).end();
+    let filePath;
+    if (process.env.LOCALAPPDATA) {
+        filePath = path.join(process.env.LOCALAPPDATA, "arcane", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
     } else {
-        res.status(200);
-        res.end();
+        filePath = path.join(__dirname, "..", "ClientSettings", `ClientSettings-${currentBuildID}.Sav`);
     }
-})
+
+    fs.readFile(filePath, (err, data) => {
+        if (err) {
+            console.error("Error reading file:", err);
+            try {
+                return res.status(200).end();  
+            }catch (err) {
+                console.log("An Error Occured When Sending Data Through CloudStorage: " + err);
+            }
+        }
+
+        return res.status(200).send(data); 
+    });
+});
 
 express.get("/fortnite/api/cloudstorage/user/:accountId", async (req, res) => {
     try {

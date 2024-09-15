@@ -41,6 +41,18 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] Requested [${req.method} ${req.url}]`);
+
+    const originalSend = res.send;
+    res.send = function (body) {
+        console.log(`[${new Date().toISOString()}] Response [${req.method} ${req.url}]: ${body}`);
+        originalSend.apply(res, arguments);
+    };
+
+    next();
+});
+
+app.use((req, res, next) => {
     res.on('finish', () => {
         if (res.statusCode >= 400) {
             console.error(`Issue with request: ${req.method} ${req.url} - Status: ${res.statusCode}`);
