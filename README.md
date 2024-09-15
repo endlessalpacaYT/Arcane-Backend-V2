@@ -1,10 +1,13 @@
+# This Backend Is Used For LightningMP
+### You can find the builds used for it in the forks
+#### The main branch will be updated, the forks are for things specific to the build
+
 # Catalog Changes
 - [Catalog](Catalog.md)
 
 ## Requirements
 - [nodes](https://nodejs.org/en)
 - [mongodb](https://www.mongodb.com/)
-
 
 ## Installation
 
@@ -52,7 +55,7 @@ node index.js
 - [ ] Working MCP
 - [ ] NewsV2
 - [x] Discord Bot Integration
-- [ ] Matchmaker
+- [x] Matchmaker (Partial Support: Seems like only chapter 2 and above work)
 - [ ] Party V1
 - [ ] Party V2
 - [ ] Daily rewards
@@ -61,7 +64,7 @@ node index.js
 - [ ] HWID Bans
 - [ ] Refunding
 - [ ] Frontend
-- [ ] Universal
+- [x] Universal
 
 ## Maybe Features?
 

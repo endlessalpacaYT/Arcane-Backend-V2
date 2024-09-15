@@ -364,4 +364,9 @@ app.get('/friends/api/v1/:accountId/settings', async (req, res) => {
     }
 });
 
+app.get('/friends/api/public/list/fortnite/:accountId/recentPlayers', (req, res) => {
+    console.log(`Received request for recent players of accountId: ${req.params.accountId}`);
+    res.status(204).end();
+});
+
 module.exports = app;
