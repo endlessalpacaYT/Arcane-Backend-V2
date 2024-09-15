@@ -144,6 +144,28 @@ app.post('/api/v1/user/setting', async (req, res) => {
     }
 });
 
+app.get('/api/v1/events/Fortnite/download/:accountId', (req, res) => {
+    const { accountId } = req.params;
+
+    const eventData = {
+        "events": [
+            {
+                "id": "event_001",
+                "title": "Fortnite Championship",
+                "description": "Join the tournament and win exciting prizes!",
+                "region": req.query.region || "NAE",
+                "platform": req.query.platform || "Windows",
+                "teamAccountIds": [accountId],
+                "startDate": "2024-09-20T00:00:00Z",
+                "endDate": "2024-09-22T23:59:59Z"
+            }
+        ]
+    };
+
+    res.status(200).json(eventData);
+});
+
+
 app.get('/content-controls/:accountId', (req, res) => {
     res.status(200).send({ message: 'OK' });
 })

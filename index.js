@@ -19,6 +19,7 @@ const lightswitch = require('./src/routes/lightswitch.js');
 const profile = require("./src/routes/profile.js");
 const party = require("./src/routes/party.js");
 const mcp = require("./src/routes/mcp.js");
+const matchmaker = require("./src/routes/matchmaker.js");
 const timeline = require("./src/routes/timeline.js");
 const contentpages = require("./src/Responses/contentpages.js");
 const athena = require("./src/Responses/athena.js");
@@ -47,6 +48,7 @@ app.use(profile);
 app.use(party);
 app.use(cloudstorage);
 app.use(mcp);
+app.use(matchmaker);
 app.use(timeline);
 app.use(friends);
 app.use(athena);
@@ -98,7 +100,8 @@ async function startHTTPServer() {
 async function startMain() {
     await initDB();  
     await startHTTPServer();
-    require("./src/discord/index.js");  
+    require("./src/discord/index.js");
+    require("./src/xmpp/xmpp.js"); 
 }
 
 function startBackend() {

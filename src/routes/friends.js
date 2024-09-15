@@ -308,26 +308,6 @@ app.delete('/friends/api/v1/:accountId/blocklist/:blockAccountId', async (req, r
     }
 });
 
-app.get('/friends/api/v1/:accountId/recent/:game', async (req, res) => {
-    try {
-        const { accountId, game } = req.params;
-
-        const recentPlayers = await RecentPlayers.find({ accountId: accountId, game: game });
-
-        if (!recentPlayers || recentPlayers.length === 0) {
-            return res.status(200).json([]);
-        }
-
-        res.status(200).json(recentPlayers);
-    } catch (err) {
-        console.error('Error fetching recent players:', err);
-        res.status(500).json({
-            error: 'arcane.errors.server_error',
-            error_details: 'Error fetching recent players.'
-        });
-    }
-});
-
 app.get('/friends/api/public/friends/:accountId', async (req, res) => {
     try {
         const { accountId } = req.params;
