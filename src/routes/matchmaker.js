@@ -48,9 +48,8 @@ app.get("/fortnite/api/game/v2/matchmaking/account/:accountId/session/:sessionId
 });
 
 app.get("/fortnite/api/matchmaking/session/:sessionId", (req, res) => {
-    console.log(req.query.accountId);
-
-    let gameServerInfo = {
+    const clientRegion = req.query.region || "EU"; 
+    const gameServerInfo = {
         serverAddress: process.env.GS_IP || "127.0.0.1",
         serverPort: process.env.GS_PORT || 7777
     };
@@ -67,7 +66,7 @@ app.get("/fortnite/api/matchmaking/session/:sessionId", (req, res) => {
         "maxPrivatePlayers": 0,
         "openPrivatePlayers": 0,
         "attributes": {
-            "REGION_s": "EU",
+            "REGION_s": clientRegion,  
             "GAMEMODE_s": "FORTATHENA",
             "ALLOWBROADCASTING_b": true,
             "SUBREGION_s": "GB",
