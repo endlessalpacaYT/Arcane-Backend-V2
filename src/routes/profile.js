@@ -10,6 +10,35 @@ const Party = require("../Models/party/party");
 const Invites = require("../Models/party/invites")
 const Notification = require("../Models/party/notification")
 
+app.post('/fortnite/api/game/v2/profile/:accountId/client/SetCosmeticLoadout', async (req, res) => {
+    try {
+        const { accountId } = req.params;
+        const { loadout } = req.body; 
+
+        const userProfile = await UserV2.findOne({ Account: accountId }) || await User.findOne({ accountId: accountId });
+        if (!userProfile) {
+            return res.status(404).json({
+                error: 'arcane.errors.profile.not_found',
+                message: 'Profile not found.'
+            });
+        }
+
+        userProfile.loadout = loadout;  
+        await userProfile.save();
+
+        res.json({
+            message: 'Loadout synced successfully',
+            loadout: userProfile.loadout
+        });
+    } catch (err) {
+        console.error('Error syncing loadout:', err);
+        res.status(500).json({
+            error: 'arcane.errors.server_error',
+            message: 'The server encountered an error while processing the request.'
+        });
+    }
+});
+
 app.get('/account/api/public/account/displayName/:displayName', async (req, res) => {
     try {
         const { displayName } = req.params;
