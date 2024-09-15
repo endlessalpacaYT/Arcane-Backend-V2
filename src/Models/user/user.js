@@ -10,6 +10,10 @@ const UserSchema = new mongoose.Schema(
         username_lower: { type: String, required: true, unique: true },
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
+        settings: {
+            gameplay: { type: Object, default: {} },
+            display: { type: Object, default: {} }
+        }
     },
     {
         collection: "users"

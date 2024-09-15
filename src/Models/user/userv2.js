@@ -15,6 +15,10 @@ const UserSchema = new mongoose.Schema(
         Username_Lower: { type: String, required: true, unique: true },
         Email: { type: String, required: true, unique: true },
         Password: { type: String, required: true },
+        settings: {
+            gameplay: { type: Object, default: {} },
+            display: { type: Object, default: {} }
+        }
     },
     {
         collection: "usersv2"

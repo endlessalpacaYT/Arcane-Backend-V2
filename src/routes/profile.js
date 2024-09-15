@@ -111,9 +111,38 @@ app.post('/fortnite/api/game/v2/profile/:accountId/client/QueryProfile', async (
     }
 })
 
-app.post('/api/v1/user/setting', (req, res) => {
-    res.status(200).send({ message: 'OK' });
-})
+app.post('/api/v1/user/setting', async (req, res) => {
+    try {
+        const { accountId, settings } = req.body;
+        console.log("user settings updated: " + req.body);
+
+        let user = await UserV2.findOne({ Account: accountId }) || await User.findOne({ accountId: accountId });
+        if (!user) {
+            return res.status(404).json({
+                error: 'arcane.errors.user.not_found',
+                message: 'User not found.'
+            });
+        }
+
+        user.settings = { ...user.settings, ...settings }; 
+        try {
+            await user.save();
+        }catch (err) {
+            console.log("Failed To Save To Database: " + err);
+        }
+
+        res.status(200).json({
+            message: 'User settings updated successfully',
+            settings: user.settings  
+        });
+    } catch (err) {
+        console.error('Error updating user settings:', err);
+        res.status(500).json({
+            error: 'arcane.errors.server_error',
+            message: 'The server encountered an error while processing the request.'
+        });
+    }
+});
 
 app.get('/content-controls/:accountId', (req, res) => {
     res.status(200).send({ message: 'OK' });
