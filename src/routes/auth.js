@@ -186,6 +186,19 @@ express.post("/account/api/oauth/token", async (req, res) => {
 
     try {
         if (userV2) {
+            Memory_CurrentDisplayName = userV2.Discord;
+        }else {
+            Memory_CurrentDisplayName = user.discordId;
+        }
+    }catch {
+        Memory_CurrentDisplayName = "ArcaneV2";
+        res.status(401).json({
+            "error": "arcane.errors.discordid.not_found"
+        });
+    }
+
+    try {
+        if (userV2) {
             Memory_CurrentAccountID = userV2.Account;
         }else {
             Memory_CurrentAccountID = user.accountId;
@@ -195,6 +208,23 @@ express.post("/account/api/oauth/token", async (req, res) => {
         return res.status(401).json({
             "error": "arcane.errors.accountId.not_found"
         });
+    }
+
+    let discordId = "";
+    if (userV2) {
+        discordId = userV2.Discord;
+        if (!userV2.Discord) {
+            return res.status(401).json({
+                "error": "arcane.errors.missing.password"
+            });
+        }
+    }else {
+        discordId = user.discordId;
+        if (!user.discordId) {
+            return res.status(401).json({
+                "error": "arcane.errors.missing.password"
+            });
+        }
     }
 
     if (userV2) {
@@ -238,6 +268,7 @@ express.post("/account/api/oauth/token", async (req, res) => {
         "refresh_expires": 86400,
         "refresh_expires_at": "9999-12-02T01:12:01.100Z",
         "account_id": Memory_CurrentAccountID,
+        "discordId": discordId || "",
         "client_id": "arcaneclientid",
         "internal_client": true,
         "client_service": "fortnite",
