@@ -188,6 +188,54 @@ express.post("/account/api/oauth/refresh", async (req, res) => {
     }
 });
 
+app.get("/account/api/oauth/verify", (req, res) => {
+    const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: "Token missing or invalid" });
+    }
+  
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        console.warn("Token verification failed:", err.message);
+        return res.status(200).json({
+          "access_token": "fallback_token",
+          "expires_in": 28800,
+          "expires_at": "9999-12-02T01:12:01.100Z",
+          "token_type": "bearer",
+          "refresh_token": "fallback_refresh_token",
+          "refresh_expires": 86400,
+          "refresh_expires_at": "9999-12-02T01:12:01.100Z",
+          "account_id": Memory_CurrentAccountID,
+          "client_id": "arcaneclientid",
+          "internal_client": true,
+          "client_service": "fortnite",
+          "displayName": Memory_CurrentDisplayName,
+          "app": "fortnite",
+          "in_app_id": Memory_CurrentAccountID,
+          "device_id": "fallback_device_id"
+        });
+      }
+  
+      res.status(200).json({
+        "access_token": token,
+        "expires_in": 28800,
+        "expires_at": new Date(Date.now() + 28800 * 1000).toISOString(),
+        "token_type": "bearer",
+        "refresh_token": decoded.refreshToken,
+        "refresh_expires": 86400,
+        "refresh_expires_at": new Date(Date.now() + 86400 * 1000).toISOString(),
+        "account_id": decoded.accountId,
+        "client_id": "arcaneclientid",
+        "internal_client": true,
+        "client_service": "fortnite",
+        "displayName": decoded.displayName,
+        "app": "fortnite",
+        "in_app_id": decoded.accountId,
+        "device_id": "arcanedeviceid"
+      });
+    });
+});
+
 express.post("/account/api/oauth/token", async (req, res) => {
     const { grant_type, username, password } = req.body;
 
