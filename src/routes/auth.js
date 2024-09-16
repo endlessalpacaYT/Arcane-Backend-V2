@@ -188,7 +188,7 @@ express.post("/account/api/oauth/refresh", async (req, res) => {
     }
 });
 
-app.get("/account/api/oauth/verify", (req, res) => {
+express.get("/account/api/oauth/verify", (req, res) => {
     const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
     if (!token) {
       return res.status(401).json({ error: "Token missing or invalid" });
