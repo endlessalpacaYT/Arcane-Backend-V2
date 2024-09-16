@@ -27,385 +27,341 @@ app.get("/fortnite/api/calendar/v1/timeline", async (req, res) => {
             "activeUntil": seasonEnd,
             "activeSince": seasonStart
         }
-        
-       if (memory.season == 3) {
-        {
+    ];
+    
+    // For season 3
+    if (memory.season == 3) {
+        activeEvents.push({
             "eventType": "EventFlag.Spring2018Phase1",
             "activeUntil": "9999-01-01T00:00:00.000Z",
             "activeSince": "2020-01-01T00:00:00.000Z"
-        })
+        });
+    
         if (memory.build >= 3.1) {
-            {
+            activeEvents.push({
                 "eventType": "EventFlag.Spring2018Phase2",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
-            })
+            });
         }
+    
         if (memory.build >= 3.3) {
-            {
+            activeEvents.push({
                 "eventType": "EventFlag.Spring2018Phase3",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
-            })
+            });
         }
+    
         if (memory.build >= 3.4) {
-            {
+            activeEvents.push({
                 "eventType": "EventFlag.Spring2018Phase4",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
-            })
+            });
         }
     }
-
+    
+    // For season 4
     if (memory.season == 4) {
-        {
+        activeEvents.push({
             "eventType": "EventFlag.Blockbuster2018",
             "activeUntil": "9999-01-01T00:00:00.000Z",
             "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
+        });
+    
+        activeEvents.push({
             "eventType": "EventFlag.Blockbuster2018Phase1",
             "activeUntil": "9999-01-01T00:00:00.000Z",
             "activeSince": "2020-01-01T00:00:00.000Z"
-        })
+        });
+    
         if (memory.build >= 4.3) {
-            {
+            activeEvents.push({
                 "eventType": "EventFlag.Blockbuster2018Phase2",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
-            })
+            });
         }
+    
         if (memory.build >= 4.4) {
-            {
+            activeEvents.push({
                 "eventType": "EventFlag.Blockbuster2018Phase3",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
-            })
+            });
         }
+    
         if (memory.build >= 4.5) {
-            {
+            activeEvents.push({
                 "eventType": "EventFlag.Blockbuster2018Phase4",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
-            })
+            });
         }
     }
 
     if (memory.season == 5) {
-        {
-            "eventType": "EventFlag.RoadTrip2018",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.Horde",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.Anniversary2018_BR",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTM_Heist",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        })
-    }
-    
-    if (memory.build == 5.10) {
-        {
-            "eventType": "EventFlag.BirthdayBattleBus",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        })
-    }
-
-    if (memory.season == 6) {
-        {
-            "eventType": "EventFlag.LTM_Fortnitemares",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTM_LilKevin",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        })
-        if (memory.build >= 6.20) {
+        activeEvents.push(
             {
-                "eventType": "EventFlag.Fortnitemares",
+                "eventType": "EventFlag.RoadTrip2018",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
             },
             {
-                "eventType": "EventFlag.FortnitemaresPhase1",
+                "eventType": "EventFlag.Horde",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
             },
             {
-                "eventType": "POI0",
+                "eventType": "EventFlag.Anniversary2018_BR",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
-            })
-        }
-        if (memory.build >= 6.22) {
+            },
             {
-                "eventType": "EventFlag.FortnitemaresPhase2",
+                "eventType": "EventFlag.LTM_Heist",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
             }
+        );
+    }
+    
+    if (memory.build == 5.10) {
+        activeEvents.push({
+            "eventType": "EventFlag.BirthdayBattleBus",
+            "activeUntil": "9999-01-01T00:00:00.000Z",
+            "activeSince": "2020-01-01T00:00:00.000Z"
+        });
+    }
+    
+    // Season 6 Events
+    if (memory.season == 6) {
+        activeEvents.push(
+            {
+                "eventType": "EventFlag.LTM_Fortnitemares",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTM_LilKevin",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            }
+        );
+    
+        if (memory.build >= 6.20) {
+            activeEvents.push(
+                {
+                    "eventType": "EventFlag.Fortnitemares",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                },
+                {
+                    "eventType": "EventFlag.FortnitemaresPhase1",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                },
+                {
+                    "eventType": "POI0",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                }
+            );
+        }
+    
+        if (memory.build >= 6.22) {
+            activeEvents.push({
+                "eventType": "EventFlag.FortnitemaresPhase2",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            });
         }
     }
     
     if (memory.build == 6.20 || memory.build == 6.21) {
-        {
-            "eventType": "EventFlag.LobbySeason6Halloween",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.HalloweenBattleBus",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        })
+        activeEvents.push(
+            {
+                "eventType": "EventFlag.LobbySeason6Halloween",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.HalloweenBattleBus",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            }
+        );
     }
-
+    
+    // Season 7 Events
     if (memory.season == 7) {
-        {
-            "eventType": "EventFlag.Frostnite",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTM_14DaysOfFortnite",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTE_Festivus",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTM_WinterDeimos",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTE_S7_OverTime",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        })
+        activeEvents.push(
+            {
+                "eventType": "EventFlag.Frostnite",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTM_14DaysOfFortnite",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTE_Festivus",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTM_WinterDeimos",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTE_S7_OverTime",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            }
+        );
     }
 
     if (memory.season == 8) {
-        {
-            "eventType": "EventFlag.Spring2019",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.Spring2019.Phase1",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTM_Ashton",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTM_Goose",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTM_HighStakes",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTE_BootyBay",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        })
-        if (memory.build >= 8.2) {
+        activeEvents.push(
             {
+                "eventType": "EventFlag.Spring2019",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.Spring2019.Phase1",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTM_Ashton",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTM_Goose",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTM_HighStakes",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTE_BootyBay",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            }
+        );
+    
+        if (memory.build >= 8.2) {
+            activeEvents.push({
                 "eventType": "EventFlag.Spring2019.Phase2",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
-            })
+            });
         }
     }
-
-
+    
+    // Season 9 Events
     if (memory.season == 9) {
-        {
-            "eventType": "EventFlag.Season9.Phase1",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.Anniversary2019_BR",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTM_14DaysOfSummer",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTM_Mash",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTM_Wax",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        })
-        if (memory.build >= 9.2) {
+        activeEvents.push(
             {
+                "eventType": "EventFlag.Season9.Phase1",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.Anniversary2019_BR",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTM_14DaysOfSummer",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTM_Mash",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTM_Wax",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            }
+        );
+    
+        if (memory.build >= 9.2) {
+            activeEvents.push({
                 "eventType": "EventFlag.Season9.Phase2",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
-            })
+            });
         }
     }
-
+    
+    // Season 10 Events
     if (memory.season == 10) {
-        {
-            "eventType": "EventFlag.Mayday",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.Season10.Phase2",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.Season10.Phase3",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTE_BlackMonday",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.S10_Oak",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.S10_Mystery",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        })
+        activeEvents.push(
+            {
+                "eventType": "EventFlag.Mayday",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.Season10.Phase2",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.Season10.Phase3",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTE_BlackMonday",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.S10_Oak",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.S10_Mystery",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            }
+        );
     }
-
+    
+    // Season 11 Events
     if (memory.season == 11) {
-        {
-            "eventType": "EventFlag.LTE_CoinCollectXP",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z" 
-        },
-        {
-            "eventType": "EventFlag.LTE_Fortnitemares2019",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z" 
-        },
-        {
-            "eventType": "EventFlag.LTE_Galileo_Feats",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z" 
-        },
-        {
-            "eventType": "EventFlag.LTE_Galileo",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z" 
-        },
-        {
-            "eventType": "EventFlag.LTE_WinterFest2019",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        })
-
-        if (memory.build >= 11.2) {
+        activeEvents.push(
             {
-                "eventType": "EventFlag.Starlight",
-                "activeUntil": "9999-01-01T00:00:00.000Z",
-                "activeSince": "2020-01-01T00:00:00.000Z" 
-            })
-        }
-
-        if (memory.build < 11.3) {
-            {
-                "eventType": "EventFlag.Season11.Fortnitemares.Quests.Phase1",
-                "activeUntil": "9999-01-01T00:00:00.000Z",
-                "activeSince": "2020-01-01T00:00:00.000Z" 
-            },
-            {
-                "eventType": "EventFlag.Season11.Fortnitemares.Quests.Phase2",
-                "activeUntil": "9999-01-01T00:00:00.000Z",
-                "activeSince": "2020-01-01T00:00:00.000Z" 
-            },
-            {
-                "eventType": "EventFlag.Season11.Fortnitemares.Quests.Phase3",
-                "activeUntil": "9999-01-01T00:00:00.000Z",
-                "activeSince": "2020-01-01T00:00:00.000Z" 
-            },
-            {
-                "eventType": "EventFlag.Season11.Fortnitemares.Quests.Phase4",
-                "activeUntil": "9999-01-01T00:00:00.000Z",
-                "activeSince": "2020-01-01T00:00:00.000Z" 
-            },
-            {
-                "eventType": "EventFlag.StormKing.Landmark",
-                "activeUntil": "9999-01-01T00:00:00.000Z",
-                "activeSince": "2020-01-01T00:00:00.000Z" 
-            })
-        } else {
-            {
-                "eventType": "EventFlag.HolidayDeco",
+                "eventType": "EventFlag.LTE_CoinCollectXP",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
             },
             {
-                "eventType": "EventFlag.Season11.WinterFest.Quests.Phase1",
+                "eventType": "EventFlag.LTE_Fortnitemares2019",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
             },
             {
-                "eventType": "EventFlag.Season11.WinterFest.Quests.Phase2",
+                "eventType": "EventFlag.LTE_Galileo_Feats",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
             },
             {
-                "eventType": "EventFlag.Season11.WinterFest.Quests.Phase3",
-                "activeUntil": "9999-01-01T00:00:00.000Z",
-                "activeSince": "2020-01-01T00:00:00.000Z"
-            },
-            {
-                "eventType": "EventFlag.Season11.Frostnite",
-                "activeUntil": "9999-01-01T00:00:00.000Z",
-                "activeSince": "2020-01-01T00:00:00.000Z"
-            })
-        }
-
-        if (memory.build == 11.31 || memory.build == 11.40) {
-            {
-                "eventType": "EventFlag.Winterfest.Tree",
-                "activeUntil": "9999-01-01T00:00:00.000Z",
-                "activeSince": "2020-01-01T00:00:00.000Z"
-            },
-            {
-                "eventType": "EventFlag.LTE_WinterFest",
+                "eventType": "EventFlag.LTE_Galileo",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
             },
@@ -413,41 +369,125 @@ app.get("/fortnite/api/calendar/v1/timeline", async (req, res) => {
                 "eventType": "EventFlag.LTE_WinterFest2019",
                 "activeUntil": "9999-01-01T00:00:00.000Z",
                 "activeSince": "2020-01-01T00:00:00.000Z"
-            })
+            }
+        );
+    
+        if (memory.build >= 11.2) {
+            activeEvents.push({
+                "eventType": "EventFlag.Starlight",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            });
+        }
+    
+        if (memory.build < 11.3) {
+            activeEvents.push(
+                {
+                    "eventType": "EventFlag.Season11.Fortnitemares.Quests.Phase1",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                },
+                {
+                    "eventType": "EventFlag.Season11.Fortnitemares.Quests.Phase2",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                },
+                {
+                    "eventType": "EventFlag.Season11.Fortnitemares.Quests.Phase3",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                },
+                {
+                    "eventType": "EventFlag.StormKing.Landmark",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                }
+            );
+        } else {
+            activeEvents.push(
+                {
+                    "eventType": "EventFlag.HolidayDeco",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                },
+                {
+                    "eventType": "EventFlag.Season11.WinterFest.Quests.Phase1",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                },
+                {
+                    "eventType": "EventFlag.Season11.WinterFest.Quests.Phase2",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                },
+                {
+                    "eventType": "EventFlag.Season11.WinterFest.Quests.Phase3",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                },
+                {
+                    "eventType": "EventFlag.Season11.Frostnite",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                }
+            );
+        }
+    
+        if (memory.build == 11.31 || memory.build == 11.40) {
+            activeEvents.push(
+                {
+                    "eventType": "EventFlag.Winterfest.Tree",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                },
+                {
+                    "eventType": "EventFlag.LTE_WinterFest",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                },
+                {
+                    "eventType": "EventFlag.LTE_WinterFest2019",
+                    "activeUntil": "9999-01-01T00:00:00.000Z",
+                    "activeSince": "2020-01-01T00:00:00.000Z"
+                }
+            );
         }
     }
-
+    
+    // Season 12 Events
     if (memory.season == 12) {
-        {
-            "eventType": "EventFlag.LTE_SpyGames",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTE_JerkyChallenges",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTE_Oro",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        },
-        {
-            "eventType": "EventFlag.LTE_StormTheAgency",
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
-        })
+        activeEvents.push(
+            {
+                "eventType": "EventFlag.LTE_SpyGames",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTE_JerkyChallenges",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTE_Oro",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            },
+            {
+                "eventType": "EventFlag.LTE_StormTheAgency",
+                "activeUntil": "9999-01-01T00:00:00.000Z",
+                "activeSince": "2020-01-01T00:00:00.000Z"
+            }
+        );
     }
-
+    
+    // Season 14 Events
     if (memory.season == 14) {
-        {
+        activeEvents.push({
             "eventType": "EventFlag.LTE_Fortnitemares_2020",
             "activeUntil": "9999-01-01T00:00:00.000Z",
             "activeSince": "2020-01-01T00:00:00.000Z"
-        })
+        });
     }
-    ];
 
     res.json({
         channels: {

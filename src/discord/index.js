@@ -26,10 +26,8 @@ async function registerCommands() {
     }
 
     const rest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN);
-    const clientId = process.env.CLIENT_ID;
 
     try {
-	rest.put(Routes.applicationCommands(clientId), { body: [] })
         await rest.put(
             Routes.applicationCommands(client.user.id), 
             { body: commands }
