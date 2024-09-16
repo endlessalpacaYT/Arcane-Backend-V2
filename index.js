@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const chalk = require('chalk');
 require("dotenv").config();
 
 const app = express();
@@ -25,7 +26,7 @@ const athena = require("./src/Responses/athena.js");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
-  max: 100, 
+  max: 500, 
   message: 'Too many requests from this IP, please try again later.',
 });
 app.use(limiter);
@@ -40,11 +41,11 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] Requested [${req.method} ${req.url}]`);
+    console.log(chalk.keyword("green")(`[${new Date().toISOString()}] Requested [${req.method} ${req.url}]`));
 
     const originalSend = res.send;
     res.send = function (body) {
-        console.log(`[${new Date().toISOString()}] Response [${req.method} ${req.url}]: ${body}`);
+        console.log(chalk.keyword("green")(`[${new Date().toISOString()}] Response [${req.method} ${req.url}]: ${body}`));
         originalSend.apply(res, arguments);
     };
 

@@ -57,13 +57,12 @@ express.get("/fortnite/api/cloudstorage/system/:file", async (req, res) => {
         const ParsedFile = fs.readFileSync(file);
 
         try {
-            return res.status(200).send(ParsedFile).end();
+            return res.status(200).send(ParsedFile);
         }catch (err) {
             console.log("An Error Occured When Sending Data Through CloudStorage: " + err);
         }
     } else {
         res.status(200);
-        res.end();
     }
 })
 
@@ -99,7 +98,7 @@ express.get("/fortnite/api/cloudstorage/user/*/:file", async (req, res) => {
         if (err) {
             console.error("Error reading file:", err);
             try {
-                return res.status(200).end();  
+                return res.status(200);  
             }catch (err) {
                 console.log("An Error Occured When Sending Data Through CloudStorage: " + err);
             }
@@ -174,7 +173,7 @@ express.put("/fortnite/api/cloudstorage/user/*/:file", async (req, res) => {
     }catch (err) {
         console.log("Error Writing CloudStorage File: " + err)
     }
-    res.status(204).end();
+    res.status(204);
 })
 
 module.exports = express;

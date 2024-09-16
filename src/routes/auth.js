@@ -133,17 +133,18 @@ express.delete("/account/api/oauth/sessions/kill/*", async (req, res) => {
 
 express.get("/account/api/oauth/verify", async (req, res) => {
     res.json({
-        "token": "arcanetoken",
-        "session_id": "3c3662bcb661d6de679c636744c66b62",
+        "access_token": "arcanetoken",
+        "expires_in": 28800,
+        "expires_at": "9999-12-02T01:12:01.100Z",
         "token_type": "bearer",
+        "refresh_token": "arcanetoken",
+        "refresh_expires": 86400,
+        "refresh_expires_at": "9999-12-02T01:12:01.100Z",
+        "account_id": Memory_CurrentAccountID,
         "client_id": "arcaneclientid",
         "internal_client": true,
         "client_service": "fortnite",
-        "account_id": Memory_CurrentAccountID,
-        "expires_in": 28800,
-        "expires_at": "9999-12-02T01:12:01.100Z",
-        "auth_method": "exchange_code",
-        "display_name": Memory_CurrentDisplayName,
+        "displayName": Memory_CurrentDisplayName,
         "app": "fortnite",
         "in_app_id": Memory_CurrentAccountID,
         "device_id": "arcanedeviceid"
