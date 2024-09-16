@@ -212,7 +212,7 @@ express.get("/account/api/oauth/verify", (req, res) => {
           "displayName": Memory_CurrentDisplayName,
           "app": "fortnite",
           "in_app_id": Memory_CurrentAccountID,
-          "device_id": "fallback_device_id"
+          "device_id": "arcanedeviceid"
         });
       }
   
