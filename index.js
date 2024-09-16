@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 3551;
 const startTime = new Date();
 
 const functions = require("./src/utils/functions.js");
-const APIWEB = require("./src/APIWEB/index.js");
 const err = require("./src/utils/error.js");
 const friends = require("./src/routes/friends.js");
 const authRoutes = require('./src/routes/auth');
@@ -120,6 +119,7 @@ async function startMain() {
     await initDB();  
     await startHTTPServer();
     require("./src/discord/index.js");
+    require("./src/api/index.js");
     require("./src/xmpp/xmpp.js"); 
 }
 
