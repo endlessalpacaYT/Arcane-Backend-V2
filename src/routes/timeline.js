@@ -1,21 +1,31 @@
+require("dotenv").config();
+
 const express = require("express");
 const app = express.Router();
 
+const axios = require('axios');
+
 const functions = require("../utils/functions.js");
 
-app.get("/fortnite/api/calendar/v1/timeline", (req, res) => {
+app.get("/fortnite/api/calendar/v1/timeline", async (req, res) => {
     const memory = functions.GetVersionInfo(req);
+
+    const timelineResponse = await axios.get(`http://${process.env.API_IP}:${process.env.API_PORT}/backend/timeline`); 
+    console.log(`Get Request To: http://${process.env.API_IP}:${process.env.API_PORT}/backend/timeline`);
+
+    const seasonStart = timelineResponse.data.seasonStart || "2020-01-01T00:00:00Z";
+    const seasonEnd = timelineResponse.data.seasonEnd || "9999-01-01T00:00:00Z";
 
     let activeEvents = [
         {
             "eventType": `EventFlag.Season${memory.season}`,
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
+            "activeUntil": seasonEnd,
+            "activeSince": seasonStart
         },
         {
             "eventType": `EventFlag.${memory.lobby}`,
-            "activeUntil": "9999-01-01T00:00:00.000Z",
-            "activeSince": "2020-01-01T00:00:00.000Z"
+            "activeUntil": seasonEnd,
+            "activeSince": seasonStart
         }
     ];
 
@@ -35,9 +45,9 @@ app.get("/fortnite/api/calendar/v1/timeline", (req, res) => {
                         seasonNumber: memory.season,
                         seasonTemplateId: `AthenaSeason:athenaseason${memory.season}`,
                         matchXpBonusPoints: 0,
-                        seasonBegin: "2020-01-01T00:00:00Z",
-                        seasonEnd: "9999-01-01T00:00:00Z",
-                        seasonDisplayedEnd: "9999-01-01T00:00:00Z",
+                        seasonBegin: seasonStart,
+                        seasonEnd: seasonEnd,
+                        seasonDisplayedEnd: seasonEnd,
                         weeklyStoreEnd: "9999-01-01T00:00:00Z",
                         stwEventStoreEnd: "9999-01-01T00:00:00.000Z",
                         stwWeeklyStoreEnd: "9999-01-01T00:00:00.000Z",
