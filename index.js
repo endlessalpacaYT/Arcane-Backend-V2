@@ -24,13 +24,6 @@ const timeline = require("./src/routes/timeline.js");
 const contentpages = require("./src/Responses/contentpages.js");
 const athena = require("./src/Responses/athena.js");
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 500, 
-  message: 'Too many requests from this IP, please try again later.',
-});
-app.use(limiter);
-
 app.use(express.json());
 
 app.use((req, res, next) => {
