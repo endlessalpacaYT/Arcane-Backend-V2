@@ -4,13 +4,35 @@ const fs = require("fs");
 const path = require("path");
 const iniparser = require("ini");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const User = require("../Models/user/user.js");
 const UserV2 = require("../Models/user/userv2.js");
+const Token = require("../Models/token.js");
 
 express.use(Express.urlencoded({ extended: true }));
 
 var Memory_CurrentDisplayName = "ArcaneV2";
 var Memory_CurrentAccountID = "";
+
+const secretKey = process.env.JWT_SECRET || 'ArcaneV2';
+const refreshSecretKey = process.env.JWT_REFRESH_SECRET || 'yourRefreshSecretKey';
+
+function generateJWT(accountId, displayName, discordId) {
+    const accessToken = jwt.sign(
+        { accountId, displayName, discordId },
+        secretKey,
+        { expiresIn: '8h' }  
+    );
+
+    const refreshToken = jwt.sign(
+        { accountId, displayName, discordId },
+        refreshSecretKey,
+        { expiresIn: '24h' }  
+    );
+
+    return { accessToken, refreshToken };
+}
 
 express.get("/account/api/public/account", async (req, res) => {
     var response = [];
@@ -131,145 +153,94 @@ express.delete("/account/api/oauth/sessions/kill/*", async (req, res) => {
     res.end();
 })
 
-express.get("/account/api/oauth/verify", async (req, res) => {
-    res.json({
-        "access_token": "arcanetoken",
-        "expires_in": 28800,
-        "expires_at": "9999-12-02T01:12:01.100Z",
-        "token_type": "bearer",
-        "refresh_token": "arcanetoken",
-        "refresh_expires": 86400,
-        "refresh_expires_at": "9999-12-02T01:12:01.100Z",
-        "account_id": Memory_CurrentAccountID,
-        "client_id": "arcaneclientid",
-        "internal_client": true,
-        "client_service": "fortnite",
-        "displayName": Memory_CurrentDisplayName,
-        "app": "fortnite",
-        "in_app_id": Memory_CurrentAccountID,
-        "device_id": "arcanedeviceid"
-    })
-})
+express.post("/account/api/oauth/refresh", async (req, res) => {
+    const { refresh_token } = req.body;
+
+    try {
+        const decoded = jwt.verify(refresh_token, process.env.JWT_REFRESH_SECRET);
+
+        const token = await Token.findOne({ refreshToken: refresh_token });
+        if (!token) {
+            return res.status(401).json({ error: 'Invalid refresh token' });
+        }
+
+        const { accessToken, refreshToken } = generateJWT(token.accountId, token.displayName, token.discordId);
+
+        token.token = accessToken;
+        token.expiresAt = new Date(Date.now() + 28800 * 1000); 
+        token.refreshToken = refreshToken;
+        token.refreshExpiresAt = new Date(Date.now() + 86400 * 1000); 
+        await token.save();
+
+        res.json({
+            access_token: accessToken,
+            expires_in: 28800,
+            expires_at: token.expiresAt,
+            refresh_token: refreshToken,
+            refresh_expires: 86400,
+            refresh_expires_at: token.refreshExpiresAt,
+            account_id: token.accountId,
+            discordId: token.discordId,
+            client_id: "arcaneclientid"
+        });
+    } catch (error) {
+        return res.status(401).json({ error: 'Invalid or expired refresh token' });
+    }
+});
 
 express.post("/account/api/oauth/token", async (req, res) => {
     const { grant_type, username, password } = req.body;
 
-    var userV2 = await UserV2.findOne({ Email: username });
-    if (!userV2) {
-        user = await User.findOne({ email: username });
-        if (!user) {
-            return res.status(401).json({
-                "error": "arcane.errors.invalid.email"
-            });
-        }
-    }
-    try {
-        if (userV2) {
-            Memory_CurrentDisplayName = userV2.Username;
-        }else {
-            Memory_CurrentDisplayName = user.username;
-        }
-    }catch {
-        Memory_CurrentDisplayName = "ArcaneV2";
+    let user = await UserV2.findOne({ Email: username }) || await User.findOne({ email: username });
+
+    if (!user) {
         return res.status(401).json({
-            "error": "arcane.errors.username.not_found"
+            "error": "arcane.errors.invalid.email"
         });
     }
 
-    try {
-        if (userV2) {
-            Memory_CurrentDisplayName = userV2.Discord;
-        }else {
-            Memory_CurrentDisplayName = user.discordId;
-        }
-    }catch {
-        Memory_CurrentDisplayName = "ArcaneV2";
-        res.status(401).json({
-            "error": "arcane.errors.discordid.not_found"
-        });
-    }
-
-    try {
-        if (userV2) {
-            Memory_CurrentAccountID = userV2.Account;
-        }else {
-            Memory_CurrentAccountID = user.accountId;
-        }
-    }catch {
-        Memory_CurrentDisplayName = "ArcaneV2";
+    const validPassword = await bcrypt.compare(password, user.Password);
+    if (!validPassword) {
         return res.status(401).json({
-            "error": "arcane.errors.accountId.not_found"
+            "error": "arcane.errors.invalid.password"
         });
     }
 
-    let discordId = "";
-    if (userV2) {
-        discordId = userV2.Discord;
-        if (!userV2.Discord) {
-            return res.status(401).json({
-                "error": "arcane.errors.missing.password"
-            });
-        }
-    }else {
-        discordId = user.discordId;
-        if (!user.discordId) {
-            return res.status(401).json({
-                "error": "arcane.errors.missing.password"
-            });
-        }
-    }
+    const Memory_CurrentDisplayName = user.Username || user.username || "ArcaneV2";
+    const Memory_CurrentAccountID = user.Account || user.accountId;
+    const discordId = user.Discord || user.discordId || "";
 
-    if (userV2) {
-        if (!userV2.Password) {
-            return res.status(401).json({
-                "error": "arcane.errors.missing.password"
-            });
-        }
-    }else {
-        if (!user.Password) {
-            return res.status(401).json({
-                "error": "arcane.errors.missing.password"
-            });
-        }
-    }
+    const { accessToken, refreshToken } = generateJWT(Memory_CurrentAccountID, Memory_CurrentDisplayName, discordId);
 
-    if (userV2) {
-        const validPassword = await bcrypt.compare(password, userV2.Password);
-        if (!validPassword) {
-            return res.status(401).json({
-                "error": "arcane.errors.invalid.password"
-            });
-        }
-    }else {
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) {
-            return res.status(401).json({
-                "error": "arcane.errors.invalid.password"
-            });
-        }
-    }
+    const token = new Token({
+        token: accessToken,
+        accountId: Memory_CurrentAccountID,
+        expiresAt: new Date(Date.now() + 28800 * 1000), 
+        refreshToken: refreshToken,
+        refreshExpiresAt: new Date(Date.now() + 86400 * 1000) 
+    });
 
-    if (Memory_CurrentDisplayName.includes("@")) Memory_CurrentDisplayName = Memory_CurrentDisplayName.split("@")[0];
+    await token.save();
 
     res.json({
-        "access_token": "arcanetoken",
-        "expires_in": 28800,
-        "expires_at": "9999-12-02T01:12:01.100Z",
-        "token_type": "bearer",
-        "refresh_token": "arcanetoken",
-        "refresh_expires": 86400,
-        "refresh_expires_at": "9999-12-02T01:12:01.100Z",
-        "account_id": Memory_CurrentAccountID,
-        "discordId": discordId || "",
-        "client_id": "arcaneclientid",
-        "internal_client": true,
-        "client_service": "fortnite",
-        "displayName": Memory_CurrentDisplayName,
-        "app": "fortnite",
-        "in_app_id": Memory_CurrentAccountID,
-        "device_id": "arcanedeviceid"
-    })
-})
+        access_token: accessToken,
+        expires_in: 28800,
+        expires_at: token.expiresAt,
+        token_type: "bearer",
+        refresh_token: refreshToken,
+        refresh_expires: 86400,
+        refresh_expires_at: token.refreshExpiresAt,
+        account_id: Memory_CurrentAccountID,
+        discordId: discordId,
+        client_id: "arcaneclientid",
+        internal_client: true,
+        client_service: "fortnite",
+        displayName: Memory_CurrentDisplayName,
+        app: "fortnite",
+        in_app_id: Memory_CurrentAccountID,
+        device_id: "arcanedeviceid"
+    });
+});
 
 express.post("/account/api/oauth/exchange", async (req, res) => {
     res.json({})
