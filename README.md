@@ -46,7 +46,6 @@ node index.js
 - [x] Login
 - [x] Easy setup
 - [x] Database (MongoDB)
-- [x] WEBSERVICE API
 - [ ] Auto shop
 - [ ] Battle Pass
 - [ ] Challenges
@@ -65,6 +64,7 @@ node index.js
 - [ ] Refunding
 - [ ] Frontend
 - [x] Universal
+- [ ] API
 
 ## Maybe Features?
 
