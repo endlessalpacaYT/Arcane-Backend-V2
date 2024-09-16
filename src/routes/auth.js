@@ -16,7 +16,7 @@ var Memory_CurrentDisplayName = "ArcaneV2";
 var Memory_CurrentAccountID = "";
 
 const secretKey = process.env.JWT_SECRET || 'ArcaneV2';
-const refreshSecretKey = process.env.JWT_REFRESH_SECRET || 'yourRefreshSecretKey';
+const refreshSecretKey = process.env.JWT_SECRET || 'ArcaneV2';
 
 function generateJWT(accountId, displayName, discordId) {
     const accessToken = jwt.sign(
