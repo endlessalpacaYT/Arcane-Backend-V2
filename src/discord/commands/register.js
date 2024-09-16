@@ -8,7 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("register")
-        .setDescription("Create An Account On ArcaneV2!")
+        .setDescription("Create An Account On Lightning!")
         .addStringOption(option =>
             option.setName("username")
                 .setDescription("What Do You Want Your Ingame Username To Be?")
@@ -62,7 +62,7 @@ module.exports = {
                 const newUserV2 = new UserV2({
                     Create: new Date(),
                     Banned: false,
-                    BannedReason: "Your Banned From Playing On The Arcane Backend",
+                    BannedReason: "You are banned from Lightning.",
                     MatchmakerID: generateAccountId(),
                     Discord: userId,
                     Account: generateAccountId(),

@@ -6,6 +6,8 @@ const iniparser = require("ini");
 const bcrypt = require("bcrypt");
 const User = require("../Models/user/user.js");
 const UserV2 = require("../Models/user/userv2.js");
+const functions = require("../utils/functions.js");
+require('dotenv').config();
 
 express.use(Express.urlencoded({ extended: true }));
 
@@ -152,6 +154,13 @@ express.get("/account/api/oauth/verify", async (req, res) => {
 
 express.post("/account/api/oauth/token", async (req, res) => {
     const { grant_type, username, password } = req.body;
+    const build = functions.GetVersionInfo(req).build;
+
+    if (build != process.env.CURRENT_BUILD) {
+        return res.status(401).json({
+            "error": "arcane.errors.invalid.version"
+        });
+    } 
 
     var userV2 = await UserV2.findOne({ Email: username });
     if (!userV2) {
@@ -169,7 +178,7 @@ express.post("/account/api/oauth/token", async (req, res) => {
             Memory_CurrentDisplayName = user.username;
         }
     }catch {
-        Memory_CurrentDisplayName = "ArcaneV2";
+        Memory_CurrentDisplayName = "Lightning";
         return res.status(401).json({
             "error": "arcane.errors.username.not_found"
         });
@@ -182,7 +191,7 @@ express.post("/account/api/oauth/token", async (req, res) => {
             Memory_CurrentAccountID = user.accountId;
         }
     }catch {
-        Memory_CurrentDisplayName = "ArcaneV2";
+        Memory_CurrentDisplayName = "Lightning";
         return res.status(401).json({
             "error": "arcane.errors.accountId.not_found"
         });
@@ -284,7 +293,7 @@ express.get('/fortnite/api/game/v2/enabled_features', (req, res) => {
         },
         {
             "featureName": "CreativeMode",
-            "enabled": true
+            "enabled": false
         }
     ];
 

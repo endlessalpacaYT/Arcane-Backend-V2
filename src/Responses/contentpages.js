@@ -6,24 +6,6 @@ app.get('/content/api/pages/fortnite-game', (req, res) => {
     const currentDate = new Date().toISOString();
 
     res.json({
-        "_title": "Fortnite Game",
-        "_activeDate": currentDate,
-        "lastModified": currentDate,
-        "_locale": "en-US",
-        "loginmessage": {
-            "_title": "LoginMessage",
-            "loginmessage": {
-                "_type": "CommonUI Simple Message",
-                "message": {
-                    "_type": "CommonUI Simple Message Base",
-                    "title": "Welcome To Arcane Backend V2!",
-                    "body": "Enjoy Your Gaming Experience With Our Constantly Updating Backend!"
-                }
-            },
-            "_activeDate": currentDate,
-            "lastModified": currentDate,
-            "_locale": "en-US"
-        },
         "athenamessage": {
             "_title": "Battle Royale",
             "overrideablemessage": {

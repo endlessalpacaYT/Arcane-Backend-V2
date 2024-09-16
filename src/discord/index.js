@@ -44,11 +44,11 @@ function setBotStatus() {
     client.user.setPresence({
         activities: [
             {
-                name: "ArcaneV2",
-                type: ActivityType.Watching 
+                name: "Lightning",
+                type: ActivityType.Playing 
             }
         ],
-        status: 'dnd' 
+        status: 'idle' 
     })
 }
 

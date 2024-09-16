@@ -37,13 +37,13 @@ app.get("/fortnite/api/playlists", (req, res) => {
                 "playlist_name": "Playlist_DefaultDuo",
                 "playlist_id": "duo",
                 "description": "Duo mode",
-                "enabled": true
+                "enabled": false
             },
             {
                 "playlist_name": "Playlist_DefaultSquad",
                 "playlist_id": "squad",
                 "description": "Squad mode",
-                "enabled": true
+                "enabled": false
             }
         ]
     });

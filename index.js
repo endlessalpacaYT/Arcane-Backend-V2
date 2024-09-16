@@ -119,8 +119,8 @@ async function startMain() {
     await initDB();  
     await startHTTPServer();
     require("./src/discord/index.js");
-    require("./src/api/index.js");
     require("./src/xmpp/xmpp.js"); 
+    require("./src/api/index.js"); 
 }
 
 function startBackend() {
