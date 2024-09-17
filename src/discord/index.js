@@ -7,7 +7,7 @@ const path = require("path");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
-// TODO: add ban command, make sure it can only be used by admins.
+// TODO: not much :)
 
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);

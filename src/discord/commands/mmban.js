@@ -5,18 +5,18 @@ const UserV2 = require('../../Models/user/userv2.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("ban")
-        .setDescription("Ban a user.")
+        .setName("mmban")
+        .setDescription("Ban a user from matchmaking.")
         .addUserOption(option =>
             option.setName("user")
-                .setDescription("User to ban.")
+                .setDescription("User to ban from matchmaking.")
                 .setRequired(true))
         .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
 
     async execute(interaction) {
         const user = interaction.options.getUser('user');
         const userId = user.id;
-        const banningUser = interaction.user; 
+
         try {
             const existingUser = await User.findOne({ discordId: userId });
             const existingUserV2 = await UserV2.findOne({ Discord: userId });
@@ -31,31 +31,21 @@ module.exports = {
                 return;
             }
 
-            
-            const dmEmbed = new EmbedBuilder()
-                .setColor("#ff0000")
-                .setTitle("You have been banned")
-                .setDescription(`You have been banned from the server by ${banningUser.tag}.`)
-                .setTimestamp();
-
-            try {
-                await user.send({ embeds: [dmEmbed] });
-            } catch (error) {
-                console.error('Could not send DM to user:', error);
-            }
-
-            
             if (existingUserV2) {
-                await existingUserV2.updateOne({ $set: { Banned: true } });
+                await existingUserV2.updateOne({ $set: { MatchmakerBanned: true } });
             } else if (existingUser) {
-                await existingUser.updateOne({ $set: { banned: true } });
+                const embed = new EmbedBuilder()
+                .setColor("#a600ff")
+                .setTitle("Failed to ban from matchmaking")
+                .setDescription("The current user is unable to be matchmaker banned, due to them having a V1 Account.");
+
+            await interaction.reply({ embeds: [embed], ephemeral: true });
             }
 
-            
             const embed = new EmbedBuilder()
                 .setColor("#a600ff")
                 .setTitle("Successfully banned user")
-                .setDescription(`Banned user <@${userId}>.`);
+                .setDescription("Banned user <@" + userId + "> from matchmaking.");
 
             await interaction.reply({ embeds: [embed], ephemeral: true });
 

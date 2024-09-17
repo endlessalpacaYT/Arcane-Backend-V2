@@ -11,7 +11,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor("#a600ff")
                 .setTitle("Pong!")
-                .setDescription("The Backend Is Online!");
+                .setDescription("Lightning is currently online.");
 
             await interaction.reply({ embeds: [embed] });
         } catch (error) {

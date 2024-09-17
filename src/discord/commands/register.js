@@ -11,15 +11,15 @@ module.exports = {
         .setDescription("Create An Account On Lightning!")
         .addStringOption(option =>
             option.setName("username")
-                .setDescription("What Do You Want Your Ingame Username To Be?")
+                .setDescription("Your desired Username.")
                 .setRequired(true))
         .addStringOption(option =>
             option.setName("email")
-                .setDescription("Your Email Which Will Be Used To Login.")
+                .setDescription("Your desired email for login.")
                 .setRequired(true))
         .addStringOption(option =>
             option.setName("password")
-                .setDescription("Your Password Which Will Be Used To Login.")
+                .setDescription("Your password for login (not for discord).")
                 .setRequired(true)),
 
     async execute(interaction) {
@@ -37,22 +37,14 @@ module.exports = {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         try {
-            const existingUser = await User.findOne({ discordId: userId });
-            const existingUserV2 = await UserV2.findOne({ discordId: userId });
+            const existingUser = await User.findOne({ Discord: userId });
+            const existingUserV2 = await UserV2.findOne({ Discord: userId });
 
-            if (existingUser) {
+            if (existingUser || existingUserV2) {
                 const embed = new EmbedBuilder()
                     .setColor("#ff0000")
                     .setTitle("Failed To Create An Account!")
-                    .setDescription("Reason: You already created an account!");
-
-                await interaction.reply({ embeds: [embed], ephemeral: true });
-                return;
-            } else if (existingUserV2) {
-                const embed = new EmbedBuilder()
-                    .setColor("#ff0000")
-                    .setTitle("Failed To Create An Account!")
-                    .setDescription("Reason: You already created an account!");
+                    .setDescription("Reason: You have already created an account!");
 
                 await interaction.reply({ embeds: [embed], ephemeral: true });
                 return;
@@ -71,9 +63,10 @@ module.exports = {
                     Email: email,
                     Password: hashedPassword
                 });
-    
+
                 await newUserV2.save();
-            }catch (err) {
+            } catch (err) {
+               
                 const newUser = new User({
                     created: new Date(),
                     banned: false,
@@ -84,7 +77,7 @@ module.exports = {
                     email: email,
                     password: hashedPassword
                 });
-    
+
                 await newUser.save();
                 console.log("Reverted Creating User To V1: " + err);
             }
@@ -92,9 +85,43 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor("#a600ff")
                 .setTitle("Successfully Registered")
-                .setDescription("Registered With The Username: " + username);
+                .setDescription("Registered with the following details:")
+                .addFields([
+                    {
+                        name: "Username",
+                        value: username,
+                        inline: true
+                    },
+                    {
+                        name: "Email",
+                        value: email,
+                        inline: true
+                    },
+                ]);
 
             await interaction.reply({ embeds: [embed], ephemeral: true });
+
+            
+            const publicEmbed = new EmbedBuilder()
+                .setColor("#a600ff")
+                .setTitle("New Signup!")
+                .setDescription("A user has registered on the Lightning Backend.")
+                .addFields([
+                    {
+                        name: "Username",
+                        value: username,
+                        inline: true
+                    },
+                    {
+                        name: "Discord Tag",
+                        value: interaction.user.tag,  
+                        inline: true
+                    }
+                ])
+                .setImage(interaction.user.displayAvatarURL({ dynamic: true })); 
+
+            await interaction.followUp({ embeds: [publicEmbed] }); 
+
         } catch (error) {
             console.error('Error registering user:', error);
             await interaction.reply({ content: 'There was an error registering your account. Please try again later.', ephemeral: true });

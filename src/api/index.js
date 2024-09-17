@@ -1,5 +1,6 @@
 const express = require("express");
 require("dotenv").config();
+const UserV2 = require("../Models/user/userv2.js");
 
 const app = express();
 
@@ -95,46 +96,37 @@ app.get('/backend/timeline', (req, res) => {
 })
 
 
-app.get("/launcher/skin", sendData(async (req, res) => {
-    const { account } = req.query;
 
-    if (!account) {
-        return res.status(400).send("Account ID is required.");
-    }
 
-    
-
-    const profile = await Profiles.findOne({ account });
-
-    if (!profile) {
-        return res.status(404).json({ error: "Profile not found" });
-    }
-
-    const playercid = profile.profiles.athena.items.Lightning.attributes.locker_slots_data.slots.Character.items;
-
-    let cid;
-    if (!playercid || playercid.length === 0) {
-        cid = "CID_001_Athena_Commando_F_Default";
-    } else {
-        cid = playercid[0].replace('AthenaCharacter:', '');
-    }
+app.post('/launcher/login', async (req, res) => {
+    const { email, password } = req.body;
 
     try {
-        const response = await axios.get(`https://fortnite-api.com/v2/cosmetics/br/${cid}`);
-        const iconUrl = response.data.data.images.icon;
-
-        if (!iconUrl) {
-            console.error("Icon was not found.");
-            return res.status(404).json({ error: "Icon was not found." });
+        if (!email || !password) {
+            return res.status(400).json({ success: false, message: 'Email and Password are required.' });
         }
 
-        console.log(`Icon URL for ${user.username}: ${iconUrl}`);
-        return res.json(iconUrl);
+        const user = await UserV2.findOne({ Email });
+
+        if (!user) {
+            return res.status(401).json({ success: false, message: 'Invalid Email.' });
+        }
+
+        const match = await bcrypt.compare(password, user.password);
+
+        if (match) {
+            res.json({ success: true, message: 'Login successful', username: user.username, discordId: user.discordId });
+        } else {
+            res.status(401).json({ success: false, message: 'Invalid Password.' });
+        }
     } catch (error) {
-        console.error(`Failed: ${error.message}`);
-        return res.status(500).json({ error: "Failed to get Current Skin" });
+        if (verboseLogging == "true") {
+            console.error('Error during login of a user:', error);
+        }
+        
+        res.status(500).json({ success: false, message: 'Internal Server Error.' });
     }
-}));
+});
 
 async function startHTTPServer() {
     app.listen(PORT, () => {
