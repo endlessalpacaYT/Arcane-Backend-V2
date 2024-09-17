@@ -129,4 +129,43 @@ app.get("/fortnite/api/game/v2/events/tournament/:tournamentId", (req, res) => {
     res.json(response);
 });
 
+app.get("/fortnite/api/storefront/v2/catalog", async (req, res) => {
+    const catalog = {
+            "daily1": {
+                "itemGrants": ["AthenaCharacter:cid_001_athena_commando_f_default"],
+                "price": 0
+            },
+            "daily2": {
+                "itemGrants": ["AthenaCharacter:cid_002_athena_commando_f_default"],
+                "price": 0
+            },
+            "daily3": {
+                "itemGrants": ["AthenaCharacter:cid_003_athena_commando_f_default"],
+                "price": 0
+            },
+            "daily4": {
+                "itemGrants": ["AthenaCharacter:cid_004_athena_commando_f_default"],
+                "price": 0
+            },
+            "daily5": {
+                "itemGrants": ["AthenaCharacter:cid_005_athena_commando_m_default"],
+                "price": 0
+            },
+            "daily6": {
+                "itemGrants": ["AthenaCharacter:cid_006_athena_commando_m_default"],
+                "price": 0
+            },
+            "featured1": {
+                "itemGrants": ["AthenaCharacter:cid_007_athena_commando_m_default"],
+                "price": 0
+            },
+            "featured2": {
+                "itemGrants": ["AthenaCharacter:cid_008_athena_commando_m_default"],
+                "price": 0
+            }
+    };
+
+    res.status(200).json(catalog);
+});
+
 module.exports = app;

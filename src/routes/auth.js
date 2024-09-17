@@ -434,10 +434,6 @@ express.post('/fortnite/api/game/v2/profile/:backend/client/SetMtxPlatform', (re
 
 const keychain = require("./../responses/keychain.json");
 
-express.get("/fortnite/api/storefront/v2/catalog", async (req, res) => {
-    res.status(200).json({ message: "Catalog fetched successfully" });
-});
-
 express.get("/fortnite/api/storefront/v2/keychain", async (req, res) => {
     res.json(keychain)
 })
