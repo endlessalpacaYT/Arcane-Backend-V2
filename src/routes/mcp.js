@@ -168,4 +168,39 @@ app.get("/fortnite/api/storefront/v2/catalog", async (req, res) => {
     res.status(200).json(catalog);
 });
 
+app.get("/catalog/api/shared/bulk/offers", async (req, res) => {
+    const offers = {
+        "offers": [
+            {
+                "offerId": "offer1",
+                "title": "Starter Pack",
+                "description": "A great pack to start your adventure.",
+                "itemGrants": [
+                    { "templateId": "AthenaCharacter:cid_001_athena_commando_f_default", "quantity": 1 },
+                    { "templateId": "AthenaBackpack:bid_001_backpack_default", "quantity": 1 }
+                ],
+                "prices": [
+                    { "currencyType": "V-Bucks", "currencySubType": "", "regularPrice": 500, "finalPrice": 500 }
+                ],
+                "expiry": "9999-12-31T23:59:59.999Z"
+            },
+            {
+                "offerId": "offer2",
+                "title": "Special Bundle",
+                "description": "Bundle pack with exclusive skins.",
+                "itemGrants": [
+                    { "templateId": "AthenaCharacter:cid_002_athena_commando_f_default", "quantity": 1 },
+                    { "templateId": "AthenaPickaxe:pid_001_pickaxe_default", "quantity": 1 }
+                ],
+                "prices": [
+                    { "currencyType": "V-Bucks", "currencySubType": "", "regularPrice": 1200, "finalPrice": 900 }
+                ],
+                "expiry": "9999-12-31T23:59:59.999Z"
+            }
+        ]
+    };
+
+    res.status(200).json(offers);
+});
+
 module.exports = app;

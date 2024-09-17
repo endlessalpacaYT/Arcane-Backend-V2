@@ -308,25 +308,6 @@ express.post("/fortnite/api/game/v2/tryPlayOnPlatform/account/*", async (req, re
     res.send(true);
 })
 
-express.get('/lightswitch/api/service/bulk/status', (req, res) => {
-    const statusResponse = [
-        {
-            serviceInstanceId: "fortnite",
-            status: "UP", 
-            message: "Fortnite is online.",
-            maintenanceUri: null,
-            allowedActions: ["PLAY", "DOWNLOAD"],
-            launcherInfoDTO: {
-                appName: "Fortnite",
-                catalogItemId: "4fe75bbc5a674f4f9b356b5c90567da5",
-                namespace: "fn"
-            }
-        }
-    ];
-
-    res.json(statusResponse);  
-});
-
 express.get('/fortnite/api/game/v2/enabled_features', (req, res) => {
     const enabledFeaturesResponse = [
         {
@@ -355,67 +336,6 @@ express.post('/fortnite/api/game/v2/grant_access/:backend', (req, res) => {
     res.json(grantAccessResponse);
 });
 
-const mockProfileData = (profileId) => {
-    const baseProfile = {
-        "profileRevision": 1,
-        "profileId": profileId,
-        "profileChangesBaseRevision": 1,
-        "profileChanges": [],
-        "profileCommandRevision": 1,
-        "serverTime": new Date().toISOString(),
-        "responseVersion": 1
-    };
-
-    if (profileId === "common_public") {
-        return {
-            ...baseProfile,
-            "items": {
-                "item123": {
-                    "templateId": "Token:defaultToken",
-                    "attributes": {
-                        "level": 100,
-                        "xp": 0
-                    }
-                }
-            },
-            "stats": {
-                "attributes": {
-                    "last_save_date": new Date().toISOString(),
-                    "season_number": 12
-                }
-            }
-        };
-    } else if (profileId === "common_core") {
-        return {
-            ...baseProfile,
-            "items": {
-                "item456": {
-                    "templateId": "Hero:defaultHero",
-                    "attributes": {
-                        "hero_level": 50,
-                        "hero_xp": 2000
-                    }
-                }
-            },
-            "stats": {
-                "attributes": {
-                    "last_save_date": new Date().toISOString(),
-                    "account_level": 80
-                }
-            }
-        };
-    } else {
-        return baseProfile; 
-    }
-};
-
-express.post('/fortnite/api/game/v2/profile/:backend/client/QueryProfile', (req, res) => {
-    const { profileId } = req.query; 
-    const profileData = mockProfileData(profileId);
-
-    res.json(profileData);
-});
-
 express.post('/fortnite/api/game/v2/profile/:backend/client/SetMtxPlatform', (req, res) => {
     const { profileId, rvn } = req.query;
 
@@ -436,10 +356,6 @@ const keychain = require("./../responses/keychain.json");
 
 express.get("/fortnite/api/storefront/v2/keychain", async (req, res) => {
     res.json(keychain)
-})
-
-express.get("/catalog/api/shared/bulk/offers", async (req, res) => {
-    res.json({});
 })
 
 module.exports = express;
