@@ -49,4 +49,29 @@ app.post('/fortnite/api/game/v2/profile/:accountId/client/ClientQuestLogin', asy
     res.status(200).json(profileData);
 });
 
+app.post("/fortnite/api/game/v2/profile/*/client/:operation", async (req, res) => {
+    const { accountId, operation } = req.params;
+
+    switch (operation) {
+        case "QueryProfile": break;
+        case "ClientQuestLogin": break;
+        case "RefreshExpeditions": break;
+        case "GetMcpTimeForLogin": break;
+        case "IncrementNamedCounterStat": break;
+        case "SetHardcoreModifier": break;
+        case "SetMtxPlatform": break;
+        case "BulkEquipBattleRoyaleCustomization": break;
+
+        default:
+            error.createError(
+                "arcane.errors.operation_not_found",
+                `Operation ${operation} not valid`, 
+                [operation], 16035, undefined, 404, res
+            );
+        return;
+    }
+
+    res.status(200);
+});
+
 module.exports = app;
