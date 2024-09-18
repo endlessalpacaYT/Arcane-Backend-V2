@@ -22,13 +22,13 @@ function generateJWT(accountId, displayName, discordId) {
     const accessToken = jwt.sign(
         { accountId, displayName, discordId },
         secretKey,
-        { expiresIn: '8h' }  
+        { expiresIn: '9999h' }  
     );
 
     const refreshToken = jwt.sign(
         { accountId, displayName, discordId },
         refreshSecretKey,
-        { expiresIn: '24h' }  
+        { expiresIn: '9999h' }  
     );
 
     return { accessToken, refreshToken };
