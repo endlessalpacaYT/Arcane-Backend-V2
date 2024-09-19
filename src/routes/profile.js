@@ -15,7 +15,7 @@ app.post('/fortnite/api/game/v2/profile/:accountId/client/SetCosmeticLoadout', a
         const { accountId } = req.params;
         const { loadout } = req.body; 
 
-        const userProfile = await UserV2.findOne({ Account: accountId }) || await User.findOne({ accountId: accountId });
+        const userProfile = await Profile.findOne({ accountId: accountId });
         if (!userProfile) {
             return res.status(404).json({
                 error: 'arcane.errors.profile.not_found',

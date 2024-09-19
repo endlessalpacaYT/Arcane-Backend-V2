@@ -109,4 +109,19 @@ app.get("/fortnite/api*/versioncheck*", (req, res) => {
     });
 });
 
+const keychain = require("./../responses/keychain.json");
+
+app.get("/fortnite/api/storefront/v2/catalog", async (req, res) => {
+    res.status(200).json({ message: "Catalog fetched successfully" });
+});
+
+app.get("/fortnite/api/storefront/v2/keychain", async (req, res) => {
+    res.json(keychain)
+})
+
+app.get("/catalog/api/shared/bulk/offers", async (req, res) => {
+    res.json({});
+})
+
+
 module.exports = app;

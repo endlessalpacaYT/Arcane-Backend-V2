@@ -1,5 +1,6 @@
 const express = require("express");
 const crypto = require("crypto");
+const UserV2 = require("../Models/user/userv2");
 require("dotenv").config();
 
 const app = express();
@@ -20,21 +21,27 @@ app.get("/fortnite/api/matchmaking/session/findPlayer/*", (req, res) => {
     res.status(200).end();
 });
 
-app.get("/fortnite/api/game/v2/matchmakingservice/ticket/player/:accountId", (req, res) => {
+app.get("/fortnite/api/game/v2/matchmakingservice/ticket/player/:accountId", async(req, res) => {
     if (typeof req.query.bucketId !== "string") return res.status(400).end();
     if (req.query.bucketId.split(":").length !== 4) return res.status(400).end();
 
     accountId = req.params.accountId;  
+    const userV2 = await UserV2.findOne({ Account: accountId });
 
     buildUniqueId[accountId] = req.query.bucketId.split(":")[0];
-
+    if (!userV2.MatchmakerBanned == true) {
     res.json({
         "serviceUrl": `ws://${matchmaker.matchmakerIP}:${matchmaker.matchmakerPort}`,
         "ticketType": "mms-player",
-        "payload": "69=", 
+        "payload": userV2.MatchmakerID, 
         "signature": "420=" 
     });
     res.end();
+} else {
+    return res.status(401).json({
+        "error": "arcane.errors.user.matchmaker.banned"
+    });
+}
 });
 
 app.get("/fortnite/api/game/v2/matchmaking/account/:accountId/session/:sessionId", (req, res) => {

@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 
 const partySchema = new mongoose.Schema({
     partyId: { type: String, required: true, unique: true },
-    leaderId: { type: String, required: true, unique: true },  // unique because playter can only be in one lobby
+    leaderId: { type: String, required: true, unique: true },  // unique because player can only be in one lobby
     members: [
         {
-            memberId: { type: String, required: true }, // i should make this unique too, but not rn
+            memberId: { type: String, required: true, unique: true }, // i should make this unique too, but not rn
             readyState: { type: String, default: 'NOT_READY' },
             isLeader: { type: Boolean, default: false },
             platform: { type: String, default: "Windows" },

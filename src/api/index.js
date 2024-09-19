@@ -1,27 +1,16 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
 require("dotenv").config();
+const User = require("../Models/user/user.js");
 const UserV2 = require("../Models/user/userv2.js");
 
 const app = express();
+app.use(express.json());
 
 const PORT = process.env.API_PORT || 4444;
 
 
-function sendData(block) {
-    return async function (req, res) {
-        try {
-            const result = await block(req, res);
-            if (!res.headersSent) {
-                res.send(result);
-            }
-        } catch (error) {
-            log.error(error);
-            if (!res.headersSent) {
-                res.status(500).send("Internal Server Error");
-            }
-        }
-    };
-}
+
 
 app.get('/', (req, res) => {
     res.json({
@@ -106,24 +95,28 @@ app.post('/launcher/login', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Email and Password are required.' });
         }
 
-        const user = await UserV2.findOne({ Email });
+        const user = await User.findOne({ email: email });
+        const userV2 = await UserV2.findOne({ Email: email });
 
         if (!user) {
-            return res.status(401).json({ success: false, message: 'Invalid Email.' });
+            if (!userV2) {
+                return res.status(401).json({ success: false, message: 'Invalid Email.' });
+            }
         }
 
-        const match = await bcrypt.compare(password, user.password);
+        const userDetails = userV2 || user;
+
+
+
+        const match = await bcrypt.compare(password, userDetails.Password || userDetails.password);
 
         if (match) {
-            res.json({ success: true, message: 'Login successful', username: user.username, discordId: user.discordId });
+            res.json({ success: true, message: 'Login successful', username: userDetails.Username|| userDetails.username, discordId: userDetails.Discord || userDetails.discordId });
         } else {
             res.status(401).json({ success: false, message: 'Invalid Password.' });
         }
     } catch (error) {
-        if (verboseLogging == "true") {
             console.error('Error during login of a user:', error);
-        }
-        
         res.status(500).json({ success: false, message: 'Internal Server Error.' });
     }
 });

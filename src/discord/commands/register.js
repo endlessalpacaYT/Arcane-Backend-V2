@@ -4,6 +4,25 @@ const User = require('../../Models/user/user.js');
 const UserV2 = require('../../Models/user/userv2.js');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
+const Profile = require('../../Models/profile.js');
+const fs = require('fs');
+
+// ok i fully admit to skidding this one part of lawinv2
+function createProfiles(accountId) {
+    let profiles = {};
+
+    fs.readdirSync("./src/Responses/DefaultProfiles").forEach(fileName => {
+        const profile = require(`../../Responses/DefaultProfiles/${fileName}`);
+
+        profile.accountId = accountId;
+        profile.created = new Date().toISOString();
+        profile.updated = new Date().toISOString();
+
+        profiles[profile.profileId] = profile;
+    });
+
+    return profiles;
+}
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -53,6 +72,7 @@ module.exports = {
             try {
                 const newUserV2 = new UserV2({
                     Create: new Date(),
+                    Online: false,
                     Banned: false,
                     BannedReason: "You are banned from Lightning.",
                     MatchmakerID: generateAccountId(),
@@ -65,11 +85,24 @@ module.exports = {
                 });
 
                 await newUserV2.save();
+
+                const newProfile = new Profile({
+                    accountId: newUserV2.Account,
+                    profileId: generateAccountId(),
+                    profileRevision: "1",
+                    profileChangesBaseRevision: "1",
+                    profileChanges: createProfiles(newUserV2.Account),
+                    serverTime: new Date(),
+                    responseVersion: "1"
+                });
+
+                await newProfile.save();
             } catch (err) {
-               
+
                 const newUser = new User({
                     created: new Date(),
                     banned: false,
+                    online: false,
                     discordId: userId,
                     accountId: generateAccountId(),
                     username: username,
@@ -80,6 +113,17 @@ module.exports = {
 
                 await newUser.save();
                 console.log("Reverted Creating User To V1: " + err);
+                const newProfile = new Profile({
+                    accountId: newUser.accountId,
+                    profileId: generateAccountId(),
+                    profileRevision: "1",
+                    profileChangesBaseRevision: "1",
+                    profileChanges: createProfiles(newUser.accountId),
+                    serverTime: new Date(),
+                    responseVersion: "1"
+                });
+
+                await newProfile.save();
             }
 
             const embed = new EmbedBuilder()
@@ -101,7 +145,7 @@ module.exports = {
 
             await interaction.reply({ embeds: [embed], ephemeral: true });
 
-            
+
             const publicEmbed = new EmbedBuilder()
                 .setColor("#a600ff")
                 .setTitle("New Signup!")
@@ -114,13 +158,13 @@ module.exports = {
                     },
                     {
                         name: "Discord Tag",
-                        value: interaction.user.tag,  
+                        value: interaction.user.tag,
                         inline: true
                     }
                 ])
-                .setImage(interaction.user.displayAvatarURL({ dynamic: true })); 
+                .setImage(interaction.user.displayAvatarURL({ dynamic: true }));
 
-            await interaction.followUp({ embeds: [publicEmbed] }); 
+            await interaction.followUp({ embeds: [publicEmbed] });
 
         } catch (error) {
             console.error('Error registering user:', error);

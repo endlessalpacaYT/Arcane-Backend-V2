@@ -35,7 +35,7 @@ module.exports = {
             const dmEmbed = new EmbedBuilder()
                 .setColor("#ff0000")
                 .setTitle("You have been banned")
-                .setDescription(`You have been banned from the server by ${banningUser.tag}.`)
+                .setDescription(`You have been banned from Lightning Backend by ${banningUser.tag}.`)
                 .setTimestamp();
 
             try {

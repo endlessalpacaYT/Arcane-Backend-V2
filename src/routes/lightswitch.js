@@ -2,6 +2,8 @@ const express = require("express");
 
 const app = express();
 
+
+
 app.get("/lightswitch/api/service/Fortnite/status", async (req, res) => {
     res.json({
         "serviceInstanceId": "fortnite",
@@ -20,6 +22,8 @@ app.get("/lightswitch/api/service/Fortnite/status", async (req, res) => {
         }
     });
 });
+
+
 
 app.get("/lightswitch/api/service/bulk/status", async (req, res) => {
     res.json([{
