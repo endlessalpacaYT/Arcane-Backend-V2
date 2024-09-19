@@ -1,5 +1,9 @@
 # ChangeLog
 
+### v0.0.2
+- Added commands
+- Added Login API
+
 ### v0.0.1
 - Got Into Lobby With The Bare Minimum
 - Added Shop
